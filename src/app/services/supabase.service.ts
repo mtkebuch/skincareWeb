@@ -15,21 +15,37 @@ export class SupabaseService {
   }
 
   async getProducts() {
-    const { data, error } = await this.supabase
-      .from('skincare_products')
-      .select('*');
+    try {
+      const { data, error } = await this.supabase
+        .from('skincare_products')
+        .select('*');
 
-    if (error) {
-      console.error('Error fetching products:', error);
+      if (error) {
+        console.error('Error fetching products:', error);
+        return [];
+      }
+
+      
+      const fixedData = (data || []).map(product => ({
+        ...product,
+        image_url: product.image_url?.startsWith('/') 
+          ? product.image_url.substring(1) 
+          : product.image_url
+      }));
+
+      console.log('Products with fixed image paths:', fixedData);
+      return fixedData;
+    } catch (err) {
+      console.error('Exception in getProducts:', err);
       return [];
     }
-    return data;
   }
 
   async addProduct(product: any) {
     const { data, error } = await this.supabase
       .from('skincare_products')
-      .insert([product]);
+      .insert([product])
+      .select();
 
     if (error) {
       console.error('Error adding product:', error);
@@ -55,7 +71,8 @@ export class SupabaseService {
     const { data, error } = await this.supabase
       .from('skincare_products')
       .update(product)
-      .eq('id', id);
+      .eq('id', id)
+      .select();
 
     if (error) {
       console.error('Error updating product:', error);
