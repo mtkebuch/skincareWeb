@@ -1,0 +1,174 @@
+<div class="auth-container">
+  <!-- Left Side - Image -->
+  <div class="auth-image">
+    <img src="assets/journal/authPhoto.jpg" alt="Authentication">
+  </div>
+
+  <!-- Right Side - Form -->
+  <div class="auth-content">
+    <!-- Form Content -->
+    <div class="form-wrapper">
+      <h1 class="form-title">Create your account</h1>
+
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="alert alert-error">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <!-- Success Message -->
+      <div *ngIf="successMessage" class="alert alert-success">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+          <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+        <span>{{ successMessage }}</span>
+      </div>
+
+      <div>
+        <div class="input-group">
+          <input 
+            type="text" 
+            [(ngModel)]="firstName" 
+            (blur)="validateFirstNameField()"
+            (input)="clearMessages(); firstNameError = ''"
+            name="firstName"
+            placeholder="First Name"
+            class="form-input"
+            [class.error]="firstNameError"
+            required
+          >
+          <button type="button" class="input-arrow">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </button>
+        </div>
+        <div *ngIf="firstNameError" class="field-error">{{ firstNameError }}</div>
+
+        <div class="input-group">
+          <input 
+            type="text" 
+            [(ngModel)]="lastName" 
+            (blur)="validateLastNameField()"
+            (input)="clearMessages(); lastNameError = ''"
+            name="lastName"
+            placeholder="Last Name"
+            class="form-input"
+            [class.error]="lastNameError"
+            required
+          >
+          <button type="button" class="input-arrow">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </button>
+        </div>
+        <div *ngIf="lastNameError" class="field-error">{{ lastNameError }}</div>
+
+        <div class="input-group">
+          <input 
+            type="email" 
+            [(ngModel)]="email" 
+            (blur)="validateEmailField()"
+            (input)="clearMessages(); emailError = ''"
+            name="email"
+            placeholder="Email Address"
+            class="form-input"
+            [class.error]="emailError"
+            required
+          >
+          <button type="button" class="input-arrow">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </button>
+        </div>
+        <div *ngIf="emailError" class="field-error">{{ emailError }}</div>
+
+        <div class="input-group">
+          <input 
+            type="password" 
+            [(ngModel)]="password" 
+            (blur)="validatePasswordField()"
+            (input)="clearMessages(); passwordError = ''"
+            name="password"
+            placeholder="Password"
+            class="form-input"
+            [class.error]="passwordError"
+            required
+          >
+          <button type="button" class="input-arrow">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </button>
+        </div>
+        <div *ngIf="passwordError" class="field-error">{{ passwordError }}</div>
+
+        <div class="input-group">
+          <input 
+            type="password" 
+            [(ngModel)]="confirmPassword" 
+            (blur)="validateConfirmPasswordField()"
+            (input)="clearMessages(); confirmPasswordError = ''"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            class="form-input"
+            [class.error]="confirmPasswordError"
+            required
+          >
+          <button type="button" class="input-arrow">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </button>
+        </div>
+        <div *ngIf="confirmPasswordError" class="field-error">{{ confirmPasswordError }}</div>
+
+        <div class="password-requirements">
+          <p class="requirements-title">Password must contain:</p>
+          <ul>
+            <li [class.valid]="password.length >= 8">At least 8 characters</li>
+            <li [class.valid]="password.match(/[A-Z]/)">One uppercase letter</li>
+            <li [class.valid]="password.match(/[a-z]/)">One lowercase letter</li>
+            <li [class.valid]="password.match(/[0-9]/)">One number</li>
+            <li [class.valid]="password.match(/[!@#$%^&*]/)">One special character (!@#$%^&*)</li>
+          </ul>
+        </div>
+
+        <button 
+          type="button"
+          (click)="register()"
+          class="login-btn"
+          [disabled]="loading"
+        >
+          {{ loading ? 'Creating Account...' : 'Create Account' }}
+        </button>
+      </div>
+
+      <div class="register-section">
+        <h2 class="register-title">Already have an account?</h2>
+        <p class="register-text">
+          Sign in to access your cabinet, order history, and saved details.
+        </p>
+        <button class="create-account-btn" (click)="goToLogin()">
+          <span>Sign in</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

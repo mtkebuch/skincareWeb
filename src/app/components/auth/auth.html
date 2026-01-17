@@ -1,0 +1,99 @@
+<div class="auth-container">
+  <!-- Left Side - Image -->
+  <div class="auth-image">
+    <img src="assets/journal/authPhoto.jpg" alt="Authentication">
+  </div>
+
+  <!-- Right Side - Form -->
+  <div class="auth-content">
+    <!-- Form Content -->
+    <div class="form-wrapper">
+      <h1 class="form-title">Log in to your account</h1>
+
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="alert alert-error">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <!-- Success Message -->
+      <div *ngIf="successMessage" class="alert alert-success">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+          <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+        <span>{{ successMessage }}</span>
+      </div>
+
+      <div>
+        <div class="input-group">
+          <input 
+            type="email" 
+            [(ngModel)]="email" 
+            (input)="clearMessages()"
+            name="email"
+            placeholder="Email Address"
+            class="form-input"
+            required
+          >
+          <button type="button" class="input-arrow">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="input-group">
+          <input 
+            type="password" 
+            [(ngModel)]="password" 
+            (input)="clearMessages()"
+            name="password"
+            placeholder="Password"
+            class="form-input"
+            required
+          >
+          <button type="button" class="input-arrow">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="forgot-password">
+          <a (click)="goToForgotPassword()" style="cursor: pointer;">Forgotten password?</a>
+        </div>
+
+        <button 
+          type="button"
+          (click)="login()"
+          class="login-btn"
+          [disabled]="loading"
+        >
+          {{ loading ? 'Signing in...' : 'Login' }}
+        </button>
+      </div>
+
+      <div class="register-section">
+        <h2 class="register-title">New to The ORDINARY?</h2>
+        <p class="register-text">
+          With an account, you can save products to your cabinet, view your
+          order history and swiftly checkout using saved details.
+        </p>
+        <button class="create-account-btn" (click)="goToRegister()">
+          <span>Create account</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

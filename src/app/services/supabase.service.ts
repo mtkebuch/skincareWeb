@@ -35,12 +35,18 @@ export class SupabaseService {
 
       console.log('Products fetched:', data.length);
       
+      // ვასუფთავებთ მონაცემებს
       const fixedData = data.map(product => ({
         ...product,
         image_url: product.image_url?.startsWith('/') 
           ? product.image_url.substring(1) 
-          : product.image_url
+          : product.image_url,
+        // ᲛᲜᲘᲨᲕᲜᲔᲚᲝᲕᲐᲜᲘ: ვასუფთავებთ category-ს ზედმეტი სივრცეებისგან
+        category: product.category?.trim()
       }));
+
+      // დიაგნოსტიკა
+      console.log('Categories found:', [...new Set(fixedData.map(p => p.category))]);
 
       return fixedData;
     } catch (err) {
@@ -68,6 +74,7 @@ export class SupabaseService {
         if (data.image_url?.startsWith('/')) {
           data.image_url = data.image_url.substring(1);
         }
+        data.category = data.category?.trim();
         console.log('Product found:', data.name);
         return data;
       }
@@ -83,7 +90,10 @@ export class SupabaseService {
   async addProduct(product: any) {
     const { data, error } = await this.supabase
       .from('skincare_products')
-      .insert([product])
+      .insert([{
+        ...product,
+        category: product.category?.trim()
+      }])
       .select();
 
     if (error) {
@@ -109,7 +119,10 @@ export class SupabaseService {
   async updateProduct(id: string, product: any) {
     const { data, error } = await this.supabase
       .from('skincare_products')
-      .update(product)
+      .update({
+        ...product,
+        category: product.category?.trim()
+      })
       .eq('id', id)
       .select();
 

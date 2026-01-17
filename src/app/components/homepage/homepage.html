@@ -1,71 +1,47 @@
-<header class="header">
-  <div class="header-content">
-    <nav class="header-nav-left">
-      <a href="#" class="nav-link">Shop</a>
-      <a href="#" class="nav-link">About Us</a>
-      <a href="#" class="nav-link">Journal</a>
-      <a href="#" class="nav-link">Stores</a>
-    </nav>
-    
-    <div class="header-logo">
-      <a routerLink="/">ORDINARY.</a>
-    </div>
-    
-    <div class="header-nav-right">
-      <button class="icon-btn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <circle cx="11" cy="11" r="8"></circle>
-          <path d="m21 21-4.35-4.35"></path>
-        </svg>
-      </button>
-      <button class="icon-btn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-          <circle cx="12" cy="7" r="4"></circle>
-        </svg>
-      </button>
-      <button class="icon-btn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-        </svg>
-      </button>
-      <button class="icon-btn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M9 2H5a2 2 0 0 0-2 2v4m0 8v4a2 2 0 0 0 2 2h4m8 0h4a2 2 0 0 0 2-2v-4m0-8V6a2 2 0 0 0-2-2h-4"></path>
-        </svg>
-      </button>
-      <button class="icon-btn cart-btn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <circle cx="9" cy="21" r="1"></circle>
-          <circle cx="20" cy="21" r="1"></circle>
-          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-        </svg>
-        <span class="cart-count">2</span>
-      </button>
-    </div>
-  </div>
-</header>
-
-<!-- Hero Section -->
 <div class="hero-section">
   <div class="hero-content">
-    <h1>Skin Care</h1>
-    <p>The skin is constantly changing, influenced by the environment, lifestyle, and diet. Our model is crafted with this in consideration, addressing various preferences and needs to help you achieve optimal skin health.</p>
   </div>
 </div>
 
 <!-- Navigation Tabs -->
 <div class="tabs-container">
   <div class="tabs">
-    <button class="tab active">Shop All</button>
-    <button class="tab">Cleanse</button>
-    <button class="tab">Exfoliate</button>
-    <button class="tab">Treat & Masque</button>
-    <button class="tab">Serum</button>
-    <button class="tab">Hydrate</button>
-    <button class="tab">Eyes & Lips</button>
-    <button class="tab">Sun Care</button>
-    <button class="tab">Skin</button>
+    <button 
+      class="tab" 
+      [class.active]="selectedCategory === 'all'"
+      (click)="filterByCategory('all')">
+      Shop All
+    </button>
+    <button 
+      class="tab" 
+      [class.active]="selectedCategory === 'Cleanse'"
+      (click)="filterByCategory('Cleanse')">
+      Cleanse
+    </button>
+    <button 
+      class="tab" 
+      [class.active]="selectedCategory === 'Serum'"
+      (click)="filterByCategory('Serum')">
+      Serum
+    </button>
+    <button 
+      class="tab" 
+      [class.active]="selectedCategory === 'Gel'"
+      (click)="filterByCategory('Gel')">
+      Gel
+    </button>
+    <button 
+      class="tab" 
+      [class.active]="selectedCategory === 'Balm'"
+      (click)="filterByCategory('Balm')">
+      Balm
+    </button>
+    <button 
+      class="tab" 
+      [class.active]="selectedCategory === 'Cream'"
+      (click)="filterByCategory('Cream')">
+      Cream
+    </button>
   </div>
 </div>
 
@@ -73,26 +49,31 @@
 <div class="products-section">
   <div class="section-header">
     <p class="section-label">Revered Formulations</p>
-    <h2>Essentials For Every Skincare</h2>
+    <h2>{{ selectedCategory === 'all' ? 'Essentials For Every Skincare' : selectedCategory }}</h2>
   </div>
 
   <div *ngIf="loading" class="loading">Loading products...</div>
 
-  <div *ngIf="!loading" class="products-grid">
-    <div *ngFor="let product of products" class="product-card">
-      <div class="product-image" [routerLink]="['/product', product.id]" style="cursor: pointer;">
-        <img 
-          [src]="product.image_url || 'https://placehold.co/400x400/e2e8f0/64748b?text=Product'" 
-          [alt]="product.name"
-          (load)="onImageLoad($event, product)"
-          (error)="onImageError($event, product)"
-          loading="lazy">
+  <div *ngIf="!loading && filteredProducts.length === 0" class="no-products">
+    <p>No products found in this category.</p>
+  </div>
+
+  <div *ngIf="!loading && filteredProducts.length > 0" class="products-grid">
+    <div *ngFor="let product of filteredProducts" class="product-card">
+      <div class="product-image">
+        <a [routerLink]="['/product', product.id]" (click)="scrollToTop()">
+          <img 
+            [src]="product.image_url || 'https://placehold.co/400x400/e2e8f0/64748b?text=Product'" 
+            [alt]="product.name"
+            (load)="onImageLoad($event, product)"
+            (error)="onImageError($event, product)"
+            loading="lazy">
+        </a>
         <button class="wishlist-btn" (click)="$event.stopPropagation()">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
           </svg>
         </button>
-        <button class="add-to-cart-hover-btn" (click)="$event.stopPropagation()">Add to your cart</button>
       </div>
       <div class="product-info">
         <h3 class="product-name">{{ product.name }}</h3>
@@ -114,7 +95,7 @@
   <div class="journal-grid">
     <article class="journal-card">
       <div class="journal-image">
-        <img src="assets/journal/sunscreen.jpg">
+        <img src="assets/journal/sunscreen.jpg" alt="Sunscreen guide">
       </div>
       <div class="journal-content">
         <h3>Distinguishing Mineral Sunscreens from Chemical Sunscreens</h3>
@@ -124,7 +105,7 @@
 
     <article class="journal-card">
       <div class="journal-image">
-        <img src="assets/journal/travel.jpg">
+        <img src="assets/journal/travel.jpg" alt="Travel skincare">
       </div>
       <div class="journal-content">
         <h3>The Rights Skincare When Travelling</h3>
@@ -134,7 +115,7 @@
 
     <article class="journal-card">
       <div class="journal-image">
-        <img src="assets/journal/sunscreen-top10.jpg">
+        <img src="assets/journal/sunscreen-top10.jpg" alt="Top sunscreens">
       </div>
       <div class="journal-content">
         <h3>Top 10 Sunscreens in 2024</h3>
@@ -144,7 +125,7 @@
 
     <article class="journal-card">
       <div class="journal-image">
-        <img src="assets/journal/well-aging.jpg">
+        <img src="assets/journal/well-aging.jpg" alt="Well aging">
       </div>
       <div class="journal-content">
         <h3>Mastering The Art Of Well Aging</h3>
@@ -160,7 +141,7 @@
 <footer class="footer">
   <div class="footer-content">
     <div class="footer-brand">
-      <h2 class="footer-logo">ORDINARY.</h2>
+      <h2 class="footer-logo">The ORDINARY.</h2>
       <p class="footer-follow">FOLLOW US</p>
       <div class="footer-social">
         <a href="#" class="social-link">
@@ -219,7 +200,7 @@
   </div>
 
   <div class="footer-bottom">
-    <p class="footer-copyright">ORDINARY. 2025 KINS All rights reserved.</p>
+    <p class="footer-copyright">The ORDINARY. 2025 KINS All rights reserved.</p>
     <div class="footer-legal">
       <a href="#">Company Profile</a>
       <a href="#">Privacy policy</a>

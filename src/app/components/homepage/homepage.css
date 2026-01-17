@@ -11,108 +11,6 @@ body {
   padding-top: 70px;
 }
 
-.header {
-  width: 100%;
-  background: #fff;
-  border-bottom: 1px solid #e0e0e0;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  font-family: 'Arimo', sans-serif;
-}
-
-.header-content {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 80px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 70px;
-  background: #fff;
-}
-
-.header-nav-left {
-  display: flex;
-  gap: 30px;
-  flex: 1;
-}
-
-.nav-link {
-  font-family: 'Arimo', sans-serif;
-  font-size: 13px;
-  color: #666;
-  text-decoration: none;
-  transition: color 0.3s;
-  letter-spacing: 0.5px;
-}
-
-.nav-link:hover {
-  color: #1a1a1a;
-}
-
-.header-logo {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.header-logo a {
-  font-family: 'Arimo', sans-serif;
-  font-size: 20px;
-  font-weight: 500;
-  color: #1a1a1a;
-  text-decoration: none;
-  letter-spacing: 2px;
-}
-
-.header-nav-right {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  flex: 1;
-  justify-content: flex-end;
-}
-
-.icon-btn {
-  background: none;
-  border: none;
-  padding: 8px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.3s;
-  position: relative;
-}
-
-.icon-btn:hover {
-  opacity: 0.6;
-}
-
-.icon-btn svg {
-  color: #1a1a1a;
-}
-
-.cart-count {
-  font-family: 'Arimo', sans-serif;
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  background: #1a1a1a;
-  color: #fff;
-  font-size: 9px;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 500;
-}
-
 /* Hero Section */
 .hero-section {
   width: 100%;
@@ -135,7 +33,6 @@ body {
   top: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to right, rgb(235, 241, 241) 0%, rgba(29, 103, 138, 0.65) 45%, rgba(106, 169, 206, 0.35) 100%);
   z-index: 0;
 }
 
@@ -159,7 +56,7 @@ body {
   font-family: 'Arimo', sans-serif;
   font-size: 15px;
   line-height: 1.8;
-  color: #000000;
+  color: #222222;
   font-weight: 300;
 }
 
@@ -277,16 +174,24 @@ body {
   background: #f8f8f8;
   margin-bottom: 20px;
   overflow: hidden;
+  cursor: pointer;
 }
 
-.product-image img {
+.product-image a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+}
+
+.product-image a img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.4s ease;
 }
 
-.product-card:hover .product-image img {
+.product-card:hover .product-image a img {
   transform: scale(1.05);
 }
 
@@ -314,34 +219,6 @@ body {
 
 .wishlist-btn:hover svg {
   stroke: #fff;
-}
-
-.add-to-cart-hover-btn {
-  font-family: 'Arimo', sans-serif;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #1a1a1a;
-  color: #fff;
-  border: none;
-  padding: 16px;
-  font-size: 12px;
-  letter-spacing: 1px;
-  cursor: pointer;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: all 0.3s ease;
-  z-index: 1;
-}
-
-.product-card:hover .add-to-cart-hover-btn {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.add-to-cart-hover-btn:hover {
-  background: #333;
 }
 
 .product-info {
@@ -475,18 +352,6 @@ body {
     padding-top: 70px;
   }
 
-  .header-content {
-    padding: 0 40px;
-  }
-
-  .header-nav-left {
-    gap: 20px;
-  }
-
-  .nav-link {
-    font-size: 12px;
-  }
-
   .hero-section,
   .products-section,
   .journal-section {
@@ -515,23 +380,6 @@ body {
 @media (max-width: 480px) {
   body {
     padding-top: 70px;
-  }
-
-  .header-content {
-    padding: 0 20px;
-  }
-
-  .header-nav-left {
-    display: none;
-  }
-
-  .header-logo {
-    position: static;
-    transform: none;
-  }
-
-  .header-nav-right {
-    gap: 15px;
   }
 
   .hero-section,
@@ -713,4 +561,12 @@ body {
   .footer-bottom {
     padding: 30px 20px 0;
   }
+}
+
+.no-products {
+  text-align: center;
+  padding: 80px 20px;
+  color: #999;
+  font-family: 'Arimo', sans-serif;
+  font-size: 16px;
 }
