@@ -1,7 +1,8 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, NavigationEnd, RouterModule } from '@angular/router';
 import { SupabaseService } from '../../services/supabase.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-homepage',
@@ -16,26 +17,39 @@ export class HomepageComponent implements OnInit {
 
   constructor(
     private supabaseService: SupabaseService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {}
 
   async ngOnInit() {
-    this.loading = true;
-    this.cdr.detectChanges();
+    // Load products initially
     await this.loadProducts();
+
+    // Reload products when navigating back to homepage
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      // Check if we're on the homepage
+      if (event.url === '/' || event.url === '') {
+        console.log('Navigated to homepage, reloading products...');
+        this.loadProducts();
+      }
+    });
   }
 
   async loadProducts() {
     try {
+      this.loading = true;
+      this.cdr.detectChanges();
+
+      console.log('Fetching products...');
       this.products = await this.supabaseService.getProducts();
-      console.log('Products loaded:', this.products);
-      
+      console.log('Products loaded:', this.products.length);
       
       this.products.forEach((product, index) => {
         console.log(`Product ${index + 1}:`, {
           name: product.name,
-          image_url: product.image_url,
-          fullPath: this.getFullImagePath(product.image_url)
+          image_url: product.image_url
         });
       });
       
@@ -45,9 +59,14 @@ export class HomepageComponent implements OnInit {
     } finally {
       this.loading = false;
       this.cdr.detectChanges();
-      console.log('Loading state:', this.loading);
-      console.log('Products count:', this.products.length);
+      console.log('Loading complete. Products count:', this.products.length);
     }
+  }
+
+  // Manual refresh method
+  async refreshProducts() {
+    console.log('Manual refresh triggered');
+    await this.loadProducts();
   }
   
   getFullImagePath(url: string): string {
@@ -57,7 +76,7 @@ export class HomepageComponent implements OnInit {
   }
   
   onImageError(event: any, product: any) {
-    console.error('❌ Image failed to load:', {
+    console.error('Image failed to load:', {
       product_name: product.name,
       attempted_url: event.target.src,
       original_url: product.image_url
@@ -66,7 +85,7 @@ export class HomepageComponent implements OnInit {
   }
   
   onImageLoad(event: any, product: any) {
-    console.log('✅ Image loaded successfully:', {
+    console.log('Image loaded successfully:', {
       product_name: product.name,
       url: event.target.src
     });

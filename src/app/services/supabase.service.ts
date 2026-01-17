@@ -12,10 +12,13 @@ export class SupabaseService {
       'https://ewqxmsfushdrbefoetbh.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3cXhtc2Z1c2hkcmJlZm9ldGJoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg2NDIzOTEsImV4cCI6MjA4NDIxODM5MX0.qumZgRm2w311npGQ_jdeRYW-yxs8sUVWWOLqXyfMXpo'
     );
+    console.log('Supabase client initialized');
   }
 
   async getProducts() {
     try {
+      console.log('Fetching all products...');
+      
       const { data, error } = await this.supabase
         .from('skincare_products')
         .select('*');
@@ -25,19 +28,55 @@ export class SupabaseService {
         return [];
       }
 
+      if (!data || data.length === 0) {
+        console.warn('No products found');
+        return [];
+      }
+
+      console.log('Products fetched:', data.length);
       
-      const fixedData = (data || []).map(product => ({
+      const fixedData = data.map(product => ({
         ...product,
         image_url: product.image_url?.startsWith('/') 
           ? product.image_url.substring(1) 
           : product.image_url
       }));
 
-      console.log('Products with fixed image paths:', fixedData);
       return fixedData;
     } catch (err) {
       console.error('Exception in getProducts:', err);
       return [];
+    }
+  }
+
+  async getProductById(id: string) {
+    try {
+      console.log('Fetching product with ID:', id);
+      
+      const { data, error } = await this.supabase
+        .from('skincare_products')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (error) {
+        console.error('Error fetching product:', error);
+        return null;
+      }
+
+      if (data) {
+        if (data.image_url?.startsWith('/')) {
+          data.image_url = data.image_url.substring(1);
+        }
+        console.log('Product found:', data.name);
+        return data;
+      }
+
+      console.log('No product found');
+      return null;
+    } catch (err) {
+      console.error('Exception in getProductById:', err);
+      return null;
     }
   }
 
