@@ -1,0 +1,188 @@
+<!-- Journal Section -->
+<section class="journal-section">
+  <h2>About skin care and more for you</h2>
+  <p class="journal-subtitle">Our Journal</p>
+  
+  <div class="journal-grid">
+    <article class="journal-card">
+      <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&q=80" alt="Journal Post">
+      <span class="journal-date">December 20, 2024</span>
+      <h3>Recognized for the Sixth Consecutive Year</h3>
+      <a href="#" class="read-more">Read more →</a>
+    </article>
+    <article class="journal-card">
+      <img src="https://images.unsplash.com/photo-1570554886111-e80fcca6a029?w=400&q=80" alt="Journal Post">
+      <span class="journal-date">December 18, 2024</span>
+      <h3>Best Night Serum: Glow-Boosting Products</h3>
+      <a href="#" class="read-more">Read more →</a>
+    </article>
+    <article class="journal-card">
+      <img src="https://images.unsplash.com/photo-1571875257727-256c39da42af?w=400&q=80" alt="Journal Post">
+      <span class="journal-date">December 15, 2024</span>
+      <h3>No. 10 in essence (2024)</h3>
+      <a href="#" class="read-more">Read more →</a>
+    </article>
+    <article class="journal-card">
+      <img src="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=400&q=80" alt="Journal Post">
+      <span class="journal-date">December 10, 2024</span>
+      <h3>The #1 Facial Mask: Products We Love</h3>
+      <a href="#" class="read-more">Read more →</a>
+    </article>
+  </div><!-- Hero Section -->
+<section class="hero">
+  <div class="hero-content">
+    <h1 class="hero-title">Natural Face Care for Visible Transformation</h1>
+    <p class="hero-subtitle">
+      Discover our collection of natural skincare solutions designed to nourish and rejuvenate your skin.
+    </p>
+    <button class="shop-btn">Shop Now</button>
+  </div>
+  <div class="hero-image">
+    <img src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=800&q=80" alt="Skincare Products">
+  </div>
+</section>
+
+<!-- Featured Section -->
+<section class="featured">
+  <div class="featured-image">
+    <img src="https://images.unsplash.com/photo-1570554886111-e80fcca6a029?w=600&q=80" alt="Featured Product">
+  </div>
+  <div class="featured-content">
+    <span class="featured-tag">FEATURED</span>
+    <h2>Expert Solutions for Demanding Skin</h2>
+    <p>
+      Optimal skincare solution for mature skin and wrinkled skin, offering rich, silky textures and anti-wrinkle properties to restore firmness.
+    </p>
+    <button class="learn-more">Learn more →</button>
+  </div>
+</section>
+
+<!-- Products Section -->
+<section class="products-section">
+  <div class="section-header">
+    <h2>Supreme Skin Fortification</h2>
+    <p>Elevate your skin care routine by using our specially selected premium products at once.</p>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <p>Loading products...</p>
+  </div>
+
+  <div class="products-grid" *ngIf="!loading">
+    <div class="product-card" *ngFor="let product of products.slice(0, 4)">
+      <div class="product-image">
+        <img [src]="product.image_url" [alt]="product.name">
+        <button class="wishlist-btn">♡</button>
+      </div>
+      <h3 class="product-name">{{ product.name }}</h3>
+      <p class="product-description">{{ product.description }}</p>
+      <div class="product-footer">
+        <span class="product-price">{{ product.price }} ₾</span>
+        <button class="add-to-cart">+</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="view-all-btn">All Products →</button>
+</section>
+
+<!-- Instagram Section -->
+<section class="instagram-section">
+  <h2>Effective Ingredients for Visible Results</h2>
+  <p>Our skincare products contain clinically proven ingredients that deliver visible results.</p>
+  <button class="discover-btn">Discover Ingredients</button>
+</section>
+
+<!-- Natural Care Section -->
+<section class="natural-care">
+  <h2>Natural Face Care for Visible Transformation</h2>
+  
+  <div class="products-grid" *ngIf="!loading">
+    <div class="product-card" *ngFor="let product of products.slice(4, 8)">
+      <div class="product-image">
+        <img [src]="product.image_url" [alt]="product.name">
+        <button class="wishlist-btn">♡</button>
+      </div>
+      <h3 class="product-name">{{ product.name }}</h3>
+      <p class="product-description">{{ product.description }}</p>
+      <div class="product-footer">
+        <span class="product-price">{{ product.price }} ₾</span>
+        <button class="add-to-cart">+</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="view-all-btn">All Products →</button>
+</section>
+
+<!-- Quote Section -->
+<section class="quote-section">
+  <blockquote>
+    "Conscious skincare for softer, radiant, glowing skin, avoiding over-exploitation and over-stimulation."
+  </blockquote>
+  <p class="quote-author">CELYN - FOUNDER, BRAND MD</p>
+</section>
+
+<!-- User Voice Section -->
+<section class="user-voice">
+  <h2>User Voice</h2>
+  <div class="gallery-grid">
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&q=80" alt="User Photo 1">
+    </div>
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=400&q=80" alt="User Photo 2">
+    </div>
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=400&q=80" alt="User Photo 3">
+    </div>
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1615397349754-cfa2066a298e?w=400&q=80" alt="User Photo 4">
+    </div>
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=400&q=80" alt="User Photo 5">
+    </div>
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1571875257727-256c39da42af?w=400&q=80" alt="User Photo 6">
+    </div>
+  </div>
+  <div class="pagination">
+    <button>←</button>
+    <button>→</button>
+  </div>
+</section>
+
+<!-- Journal Section -->
+<section class="journal-section">
+  <h2>About skin care and more for you</h2>
+  <p class="journal-subtitle">Our Journal</p>
+  
+  <div class="journal-grid">
+    <article class="journal-card">
+      <img src="assets/journal-1.jpg" alt="Journal Post">
+      <span class="journal-date">December 20, 2024</span>
+      <h3>Recognized for the Sixth Consecutive Year</h3>
+      <a href="#" class="read-more">Read more →</a>
+    </article>
+    <article class="journal-card">
+      <img src="assets/journal-2.jpg" alt="Journal Post">
+      <span class="journal-date">December 18, 2024</span>
+      <h3>Best Night Serum: Glow-Boosting Products</h3>
+      <a href="#" class="read-more">Read more →</a>
+    </article>
+    <article class="journal-card">
+      <img src="assets/journal-3.jpg" alt="Journal Post">
+      <span class="journal-date">December 15, 2024</span>
+      <h3>No. 10 in essence (2024)</h3>
+      <a href="#" class="read-more">Read more →</a>
+    </article>
+    <article class="journal-card">
+      <img src="assets/journal-4.jpg" alt="Journal Post">
+      <span class="journal-date">December 10, 2024</span>
+      <h3>The #1 Facial Mask: Products We Love</h3>
+      <a href="#" class="read-more">Read more →</a>
+    </article>
+  </div>
+
+  <button class="view-all-btn">All Blog Posts →</button>
+</section>
