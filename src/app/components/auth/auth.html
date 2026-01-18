@@ -66,8 +66,20 @@
           </button>
         </div>
 
-        <div class="forgot-password">
-          <a (click)="goToForgotPassword()" style="cursor: pointer;">Forgotten password?</a>
+        <!-- Remember Me & Forgot Password -->
+        <div class="form-options">
+          <label class="remember-me">
+            <input 
+              type="checkbox" 
+              [(ngModel)]="rememberMe" 
+              name="rememberMe"
+            >
+            <span>Remember me</span>
+          </label>
+          
+          <a (click)="goToForgotPassword()" class="forgot-password-link">
+            Forgotten password?
+          </a>
         </div>
 
         <button 

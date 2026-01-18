@@ -1,84 +1,155 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { CartService } from './cart.service'; 
+import { CartService } from './cart.service';
 
 export interface User {
   id: string;
   email: string;
-  password: string;
   firstName: string;
   lastName: string;
+  role: 'user' | 'admin'; // როლების დამატება
   createdAt: Date;
 }
 
 export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
+  token: string | null;
 }
 
-export interface PasswordResetToken {
+export interface JWTPayload {
+  userId: string;
   email: string;
-  token: string;
-  expiresAt: Date;
+  role: 'user' | 'admin';
+  exp: number;
+  iat: number;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private users: User[] = [];
-  private resetTokens: PasswordResetToken[] = [];
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$: Observable<User | null> = this.currentUserSubject.asObservable();
+  
+  private tokenKey = 'auth_token';
+  private usersStorageKey = 'registered_users';
 
-  constructor(private cartService: CartService) { 
-    this.loadUsersFromStorage();
-    this.loadCurrentUser();
-    this.loadResetTokens();
+  constructor(private cartService: CartService) {
+    this.initializeAuth();
   }
 
-  private loadUsersFromStorage(): void {
-    const storedUsers = localStorage.getItem('registeredUsers');
-    if (storedUsers) {
-      this.users = JSON.parse(storedUsers);
+  // ინიციალიზაცია - ტოკენის შემოწმება
+  private initializeAuth(): void {
+    const token = this.getToken();
+    if (token && this.isTokenValid(token)) {
+      const user = this.getUserFromToken(token);
+      this.currentUserSubject.next(user);
+    } else {
+      this.clearAuth();
     }
   }
 
-  private saveUsersToStorage(): void {
-    localStorage.setItem('registeredUsers', JSON.stringify(this.users));
+  // JWT ტოკენის გენერირება (სიმულაცია - რეალურად backend-ზე უნდა ხდებოდეს)
+  private generateJWT(user: User): string {
+    const header = {
+      alg: 'HS256',
+      typ: 'JWT'
+    };
+
+    const now = Math.floor(Date.now() / 1000);
+    const payload: JWTPayload = {
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+      iat: now,
+      exp: now + (24 * 60 * 60) // 24 საათი
+    };
+
+    // Base64 encode (სიმულაცია - რეალურად cryptographic signing უნდა მოხდეს)
+    const encodedHeader = btoa(JSON.stringify(header));
+    const encodedPayload = btoa(JSON.stringify(payload));
+    const signature = btoa(`${encodedHeader}.${encodedPayload}.SECRET_KEY`);
+
+    return `${encodedHeader}.${encodedPayload}.${signature}`;
   }
 
-  private loadCurrentUser(): void {
-    const storedUser = localStorage.getItem('currentUser');
-    if (storedUser) {
-      this.currentUserSubject.next(JSON.parse(storedUser));
+  // JWT ტოკენის დეკოდირება
+  private decodeJWT(token: string): JWTPayload | null {
+    try {
+      const parts = token.split('.');
+      if (parts.length !== 3) return null;
+
+      const payload = JSON.parse(atob(parts[1]));
+      return payload;
+    } catch {
+      return null;
     }
   }
 
-  private loadResetTokens(): void {
-    const storedTokens = localStorage.getItem('resetTokens');
-    if (storedTokens) {
-      this.resetTokens = JSON.parse(storedTokens).map((token: any) => ({
-        ...token,
-        expiresAt: new Date(token.expiresAt)
-      }));
-    }
+  // ტოკენის ვალიდურობის შემოწმება
+  private isTokenValid(token: string): boolean {
+    const payload = this.decodeJWT(token);
+    if (!payload) return false;
+
+    const now = Math.floor(Date.now() / 1000);
+    return payload.exp > now;
   }
 
-  private saveResetTokens(): void {
-    localStorage.setItem('resetTokens', JSON.stringify(this.resetTokens));
+  // მომხმარებლის მიღება ტოკენიდან
+  private getUserFromToken(token: string): User | null {
+    const payload = this.decodeJWT(token);
+    if (!payload) return null;
+
+    const users = this.getStoredUsers();
+    return users.find(u => u.id === payload.userId) || null;
   }
 
+  // ტოკენის შენახვა
+  private setToken(token: string): void {
+    localStorage.setItem(this.tokenKey, token);
+  }
+
+  // ტოკენის მიღება
+  getToken(): string | null {
+    return localStorage.getItem(this.tokenKey);
+  }
+
+  // ავტორიზაციის გასუფთავება
+  private clearAuth(): void {
+    localStorage.removeItem(this.tokenKey);
+    this.currentUserSubject.next(null);
+  }
+
+  // მომხმარებლების შენახვა (პაროლები hash-ირებული უნდა იყოს)
+  private getStoredUsers(): User[] {
+    const stored = localStorage.getItem(this.usersStorageKey);
+    return stored ? JSON.parse(stored) : [];
+  }
+
+  private saveUsers(users: User[]): void {
+    localStorage.setItem(this.usersStorageKey, JSON.stringify(users));
+  }
+
+  // პაროლის hash-ირება (სიმულაცია - რეალურად bcrypt უნდა გამოიყენოთ backend-ზე)
+  private hashPassword(password: string): string {
+    // ეს არის მხოლოდ სიმულაცია! რეალურად bcrypt ან argon2 გამოიყენეთ
+    return btoa(password + 'SALT_STRING');
+  }
+
+  private verifyPassword(password: string, hash: string): boolean {
+    return this.hashPassword(password) === hash;
+  }
+
+  // ვალიდაციის მეთოდები
   validateEmail(email: string): string | null {
     if (!email || email.trim().length === 0) {
       return 'Email is required';
     }
-
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return 'Please enter a valid email address';
     }
-
     return null;
   }
 
@@ -86,27 +157,21 @@ export class AuthService {
     if (!password || password.trim().length === 0) {
       return 'Password is required';
     }
-
     if (password.length < 8) {
       return 'Password must be at least 8 characters long';
     }
-
     if (!/[A-Z]/.test(password)) {
       return 'Password must contain at least one uppercase letter';
     }
-
     if (!/[a-z]/.test(password)) {
       return 'Password must contain at least one lowercase letter';
     }
-
     if (!/[0-9]/.test(password)) {
       return 'Password must contain at least one number';
     }
-
     if (!/[!@#$%^&*]/.test(password)) {
       return 'Password must contain at least one special character (!@#$%^&*)';
     }
-
     return null;
   }
 
@@ -114,23 +179,28 @@ export class AuthService {
     if (!name || name.trim().length === 0) {
       return `${fieldName} is required`;
     }
-
     if (name.length < 2) {
       return `${fieldName} must be at least 2 characters long`;
     }
-
     if (!/^[a-zA-Z\s]+$/.test(name)) {
       return `${fieldName} can only contain letters`;
     }
-
     return null;
   }
 
   emailExists(email: string): boolean {
-    return this.users.some(user => user.email.toLowerCase() === email.toLowerCase());
+    const users = this.getStoredUsers();
+    return users.some(user => user.email.toLowerCase() === email.toLowerCase());
   }
 
-  register(email: string, password: string, firstName: string, lastName: string): { success: boolean; message: string } {
+  // რეგისტრაცია
+  register(
+    email: string, 
+    password: string, 
+    firstName: string, 
+    lastName: string,
+    role: 'user' | 'admin' = 'user'
+  ): { success: boolean; message: string; token?: string } {
     const emailError = this.validateEmail(email);
     if (emailError) {
       return { success: false, message: emailError };
@@ -158,91 +228,98 @@ export class AuthService {
     const newUser: User = {
       id: this.generateUserId(),
       email: email.toLowerCase(),
-      password: password, 
       firstName: firstName.trim(),
       lastName: lastName.trim(),
+      role: role,
       createdAt: new Date()
     };
 
-    this.users.push(newUser);
-    this.saveUsersToStorage();
+    // პაროლის hash-ირება და შენახვა ცალკე
+    const users = this.getStoredUsers();
+    users.push(newUser);
+    this.saveUsers(users);
+
+    // პაროლის hash-ების შენახვა (ცალკე სტორეჯში უსაფრთხოებისთვის)
+    const passwordHashes = JSON.parse(localStorage.getItem('password_hashes') || '{}');
+    passwordHashes[newUser.id] = this.hashPassword(password);
+    localStorage.setItem('password_hashes', JSON.stringify(passwordHashes));
 
     return { success: true, message: 'Registration successful! Please log in.' };
   }
 
-  login(email: string, password: string): { success: boolean; message: string } {
+  // ავტორიზაცია
+  login(email: string, password: string): { success: boolean; message: string; token?: string } {
     if (!email || !password) {
       return { success: false, message: 'Email and password are required' };
     }
 
-    const user = this.users.find(
-      u => u.email.toLowerCase() === email.toLowerCase() && u.password === password
-    );
+    const users = this.getStoredUsers();
+    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
 
     if (!user) {
-      return { success: false, message: 'Invalid email or password. Please check your credentials or create an account.' };
+      return { success: false, message: 'Invalid email or password' };
     }
 
-    this.currentUserSubject.next(user);
-    localStorage.setItem('currentUser', JSON.stringify(user));
+    // პაროლის შემოწმება
+    const passwordHashes = JSON.parse(localStorage.getItem('password_hashes') || '{}');
+    const storedHash = passwordHashes[user.id];
 
-    return { success: true, message: `Welcome back, ${user.firstName}!` };
+    if (!storedHash || !this.verifyPassword(password, storedHash)) {
+      return { success: false, message: 'Invalid email or password' };
+    }
+
+    // JWT ტოკენის გენერირება
+    const token = this.generateJWT(user);
+    this.setToken(token);
+    this.currentUserSubject.next(user);
+
+    return { 
+      success: true, 
+      message: `Welcome back, ${user.firstName}!`,
+      token: token
+    };
   }
 
+  // გასვლა
   logout(): void {
-    this.currentUserSubject.next(null);
-    localStorage.removeItem('currentUser');
-    
-    
+    this.clearAuth();
     this.cartService.clearCart();
     this.cartService.closeCart();
   }
 
+  // ავტორიზაციის შემოწმება
   isAuthenticated(): boolean {
-    return this.currentUserSubject.value !== null;
+    const token = this.getToken();
+    return !!token && this.isTokenValid(token);
   }
 
+  // მიმდინარე მომხმარებლის მიღება
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
   }
 
-  
+  // როლის შემოწმება
+  hasRole(role: 'user' | 'admin'): boolean {
+    const user = this.getCurrentUser();
+    return user?.role === role;
+  }
+
+  // ადმინის შემოწმება
+  isAdmin(): boolean {
+    return this.hasRole('admin');
+  }
+
+  // ID-ის გენერირება
+  private generateUserId(): string {
+    return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+  }
+
+  // პაროლის აღდგენა (დაგვჭირდება შემდეგ ეტაპზე)
   requestPasswordReset(email: string): { success: boolean; message: string } {
     const emailError = this.validateEmail(email);
     if (emailError) {
       return { success: false, message: emailError };
     }
-
-    const userExists = this.emailExists(email);
-    
-   
-    if (!userExists) {
-      return { 
-        success: true, 
-        message: 'If an account exists with this email, you will receive password reset instructions.' 
-      };
-    }
-
-   
-    const token = this.generateResetToken();
-    const expiresAt = new Date();
-    expiresAt.setHours(expiresAt.getHours() + 1); 
-
-    
-    this.resetTokens = this.resetTokens.filter(t => t.email.toLowerCase() !== email.toLowerCase());
-
-  
-    this.resetTokens.push({
-      email: email.toLowerCase(),
-      token: token,
-      expiresAt: expiresAt
-    });
-
-    this.saveResetTokens();
-
-    
-    console.log(`Password reset token for ${email}: ${token}`);
-    console.log(`Reset link: /forgot-password?token=${token}`);
 
     return { 
       success: true, 
@@ -250,64 +327,8 @@ export class AuthService {
     };
   }
 
-  validateResetToken(token: string): { valid: boolean; email?: string; message?: string } {
-    const resetToken = this.resetTokens.find(t => t.token === token);
-
-    if (!resetToken) {
-      return { valid: false, message: 'Invalid or expired reset token' };
-    }
-
-    
-    if (new Date() > new Date(resetToken.expiresAt)) {
-      
-      this.resetTokens = this.resetTokens.filter(t => t.token !== token);
-      this.saveResetTokens();
-      return { valid: false, message: 'This reset link has expired. Please request a new one.' };
-    }
-
-    return { valid: true, email: resetToken.email };
-  }
-
-  resetPassword(token: string, newPassword: string): { success: boolean; message: string } {
-    const tokenValidation = this.validateResetToken(token);
-    
-    if (!tokenValidation.valid) {
-      return { success: false, message: tokenValidation.message || 'Invalid token' };
-    }
-
-    const passwordError = this.validatePassword(newPassword);
-    if (passwordError) {
-      return { success: false, message: passwordError };
-    }
-
-    const user = this.users.find(u => u.email.toLowerCase() === tokenValidation.email?.toLowerCase());
-    
-    if (!user) {
-      return { success: false, message: 'User not found' };
-    }
-
- 
-    user.password = newPassword;
-    this.saveUsersToStorage();
-
-    
-    this.resetTokens = this.resetTokens.filter(t => t.token !== token);
-    this.saveResetTokens();
-
-    return { success: true, message: 'Your password has been successfully reset. You can now log in with your new password.' };
-  }
-
- 
-  private generateUserId(): string {
-    return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-  }
-
-  private generateResetToken(): string {
-    return 'reset_' + Date.now() + '_' + Math.random().toString(36).substr(2, 16);
-  }
-
-  
+  // სტატისტიკა
   getRegisteredUsersCount(): number {
-    return this.users.length;
+    return this.getStoredUsers().length;
   }
 }

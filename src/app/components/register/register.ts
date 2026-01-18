@@ -17,6 +17,7 @@ export class RegisterComponent {
   email: string = '';
   password: string = '';
   confirmPassword: string = '';
+  role: 'user' | 'admin' = 'user'; // როლის არჩევა
   loading: boolean = false;
   errorMessage: string = '';
   successMessage: string = '';
@@ -27,10 +28,16 @@ export class RegisterComponent {
   lastNameError: string = '';
   confirmPasswordError: string = '';
 
+  // Admin Secret Code
+  showAdminOption: boolean = false;
+  adminSecretCode: string = '';
+  ADMIN_SECRET = 'ADMIN2024'; // ეს უნდა იყოს backend-ზე!
+
   constructor(
     private router: Router,
     private authService: AuthService
   ) {
+    // თუ უკვე ავტორიზებულია, redirect home-ზე
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/']);
     }
@@ -65,10 +72,20 @@ export class RegisterComponent {
     }
   }
 
+  // Admin option toggle
+  toggleAdminOption() {
+    this.showAdminOption = !this.showAdminOption;
+    if (!this.showAdminOption) {
+      this.role = 'user';
+      this.adminSecretCode = '';
+    }
+  }
+
   async register() {
     this.errorMessage = '';
     this.successMessage = '';
 
+    // ვალიდაციები
     this.validateFirstNameField();
     this.validateLastNameField();
     this.validateEmailField();
@@ -86,22 +103,34 @@ export class RegisterComponent {
       return;
     }
 
+    // Admin role-ის შემოწმება
+    if (this.role === 'admin') {
+      if (this.adminSecretCode !== this.ADMIN_SECRET) {
+        this.errorMessage = 'Invalid admin secret code';
+        return;
+      }
+    }
+
     this.loading = true;
 
+    // რეგისტრაცია როლით
     const result = this.authService.register(
       this.email,
       this.password,
       this.firstName,
-      this.lastName
+      this.lastName,
+      this.role
     );
+
+    this.loading = false;
 
     if (result.success) {
       this.successMessage = result.message;
+      console.log(`✅ Registered as ${this.role}`);
       setTimeout(() => {
         this.router.navigate(['/login']);
-      }, 1000);
+      }, 1500);
     } else {
-      this.loading = false;
       this.errorMessage = result.message;
     }
   }
