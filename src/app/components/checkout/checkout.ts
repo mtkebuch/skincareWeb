@@ -52,7 +52,6 @@ export class CheckoutComponent implements OnInit {
   errorMessage: string = '';
   successMessage: string = '';
 
-  
   errors: any = {};
 
   constructor(
@@ -68,19 +67,18 @@ export class CheckoutComponent implements OnInit {
       return;
     }
 
-    
     this.cartItems = this.cartService.getCartItems();
-    
     
     if (this.cartItems.length === 0) {
       this.router.navigate(['/']);
       return;
     }
 
-    
     this.shippingAddress.firstName = this.currentUser.firstName;
     this.shippingAddress.lastName = this.currentUser.lastName;
     this.shippingAddress.email = this.currentUser.email;
+    
+    console.log('🛒 Cart items at checkout:', this.cartItems);
   }
 
   getSubtotal(): number {
@@ -188,19 +186,16 @@ export class CheckoutComponent implements OnInit {
     this.errorMessage = '';
     this.successMessage = '';
 
-    
     if (!this.validateShippingAddress()) {
       this.errorMessage = 'Please fill in all required shipping information';
       return;
     }
-
 
     if (!this.validateCardDetails()) {
       this.errorMessage = 'Please fill in all required payment information';
       return;
     }
 
-   
     if (!this.agreedToTerms) {
       this.errorMessage = 'Please agree to the terms and conditions';
       return;
@@ -208,31 +203,64 @@ export class CheckoutComponent implements OnInit {
 
     this.loading = true;
 
-    
     setTimeout(() => {
+      const orderId = 'ORD-' + Date.now();
+      const orderDate = new Date();
+      
+     
+      const items = this.cartItems.map(item => {
+        const cartItemAny = item as any;
+        const imageUrl = cartItemAny.image_url || cartItemAny.image || `${item.id}.webp`;
+        
+        console.log(`📸 Preparing item "${item.name}":`, {
+          id: item.id,
+          image_url: imageUrl,
+          hasImageUrl: !!cartItemAny.image_url,
+          hasImage: !!cartItemAny.image
+        });
+        
+        return {
+          productId: item.id,
+          productName: item.name,
+          quantity: item.quantity,
+          price: item.price,
+          image_url: imageUrl,
+          image: imageUrl  
+        };
+      });
+      
       const order = {
-        orderId: 'ORD-' + Date.now(),
+        orderId: orderId,
         userId: this.currentUser?.id,
-        items: this.cartItems,
-        shippingAddress: this.shippingAddress,
-        paymentMethod: this.paymentMethod,
-        subtotal: this.getSubtotal(),
-        shipping: this.getShippingCost(),
-        total: this.getTotal(),
-        orderDate: new Date(),
-        status: 'pending'
+        customerName: `${this.shippingAddress.firstName} ${this.shippingAddress.lastName}`,
+        customerEmail: this.shippingAddress.email,
+        orderDate: orderDate,
+        status: 'pending',
+        totalAmount: this.getTotal(),
+        items: items,
+        shippingAddress: {
+          fullName: `${this.shippingAddress.firstName} ${this.shippingAddress.lastName}`,
+          firstName: this.shippingAddress.firstName,
+          lastName: this.shippingAddress.lastName,
+          email: this.shippingAddress.email,
+          phone: this.shippingAddress.phone,
+          address: this.shippingAddress.address,
+          city: this.shippingAddress.city,
+          postalCode: this.shippingAddress.postalCode,
+          country: this.shippingAddress.country
+        },
+        paymentMethod: this.paymentMethod
       };
 
-      
-      this.saveOrder(order);
+      console.log('📦 Saving order:', order);
+      console.log('📦 Order items with images:', order.items);
 
-    
+      this.saveOrder(order);
       this.cartService.clearCart();
 
       this.loading = false;
       this.successMessage = 'Order placed successfully!';
 
-    
       setTimeout(() => {
         this.router.navigate(['/order-confirmation'], { 
           queryParams: { orderId: order.orderId, new: 'true' }
@@ -245,6 +273,7 @@ export class CheckoutComponent implements OnInit {
     const orders = JSON.parse(localStorage.getItem('orders') || '[]');
     orders.push(order);
     localStorage.setItem('orders', JSON.stringify(orders));
+    console.log('✅ Order saved to localStorage:', order);
   }
 
   goBack(): void {

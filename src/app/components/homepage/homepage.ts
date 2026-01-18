@@ -27,10 +27,10 @@ export class HomepageComponent implements OnInit {
     private router: Router
   ) {}
 
-  async ngOnInit() {
-    await this.loadProducts();
+  ngOnInit() {
+    this.loadProducts();
 
-    // გვერდის რეფრეშისას ხელახლა ჩატვირთვა
+    
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
@@ -47,33 +47,38 @@ export class HomepageComponent implements OnInit {
     }, 0);
   }
 
-  async loadProducts() {
-    try {
-      this.loading = true;
-      this.cdr.detectChanges();
+  loadProducts() {
+    this.loading = true;
+    this.cdr.detectChanges();
 
-      console.log('📦 Fetching products...');
-      this.products = await this.supabaseService.getProducts();
-      this.filteredProducts = this.products;
-      console.log(`✅ Products loaded: ${this.products.length}`);
-      
-      // დეტალური ლოგირება (დეველოპმენტისთვის)
-      this.products.forEach((product, index) => {
-        console.log(`Product ${index + 1}:`, {
-          name: product.name,
-          image_url: product.image_url,
-          category: product.category
+    console.log('📦 Fetching products...');
+    
+    this.supabaseService.getProducts().subscribe({
+      next: (products) => {
+        this.products = products;
+        this.filteredProducts = this.products;
+        console.log(`✅ Products loaded: ${this.products.length}`);
+        
+        
+        this.products.forEach((product, index) => {
+          console.log(`Product ${index + 1}:`, {
+            name: product.name,
+            image_url: product.image_url,
+            category: product.category
+          });
         });
-      });
-      
-    } catch (error) {
-      console.error('❌ Error loading products:', error);
-      this.products = [];
-      this.filteredProducts = [];
-    } finally {
-      this.loading = false;
-      this.cdr.detectChanges();
-    }
+        
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('❌ Error loading products:', error);
+        this.products = [];
+        this.filteredProducts = [];
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   filterByCategory(category: string) {
@@ -93,21 +98,21 @@ export class HomepageComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  async refreshProducts() {
+  refreshProducts() {
     console.log('🔄 Manual refresh triggered');
-    await this.loadProducts();
+    this.loadProducts();
   }
   
-  // ფოტოს URL - უბრალოდ დაბრუნება (database-ში უკვე სწორი Supabase URL-ია)
+  
   getFullImagePath(url: string): string {
     if (!url) {
       return 'https://placehold.co/400x400/e2e8f0/64748b?text=No+Image';
     }
-    // URL უკვე სწორია database-ში
+    
     return url;
   }
   
-  // ფოტოს ჩატვირთვის შეცდომა
+  
   onImageError(event: any, product: any) {
     console.error('❌ Image failed to load:', {
       product: product.name,
@@ -116,7 +121,7 @@ export class HomepageComponent implements OnInit {
     event.target.src = 'https://placehold.co/400x400/e2e8f0/64748b?text=No+Image';
   }
   
-  // ფოტოს წარმატებით ჩატვირთვა
+ 
   onImageLoad(event: any, product: any) {
     console.log('✅ Image loaded:', product.name);
   }

@@ -1,4 +1,3 @@
-/* Global scroll fix */
 html {
   scroll-behavior: auto !important;
   overflow-anchor: none;
@@ -8,12 +7,12 @@ body {
   overflow-anchor: none;
 }
 
-/* Force all routes to start from top */
+
 router-outlet ~ * {
   display: block;
 }
 
-/* Prevent scroll restoration */
+
 app-product-detail {
   display: block;
   position: relative;

@@ -1,8 +1,7 @@
-<!-- cart-sidebar.html -->
 <div class="cart-overlay" [class.open]="isOpen" (click)="onOverlayClick()"></div>
 
 <div class="cart-sidebar" [class.open]="isOpen" (click)="$event.stopPropagation()">
-  <!-- Header -->
+  
   <div class="cart-header">
     <h2>Cart</h2>
     <button class="close-btn" (click)="onClose()">
@@ -13,7 +12,7 @@
     </button>
   </div>
 
-  <!-- Cart Content -->
+
   <div class="cart-content">
     <div *ngIf="getCartItems().length === 0" class="empty-cart">
       <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -29,7 +28,7 @@
         <p>Purchase one more item of the sale products and receive free shipping! *Automatically applied on the next page</p>
       </div>
 
-      <!-- Cart Items List -->
+    
       <div class="items-list">
         <div class="item-row header-row">
           <div class="item-info">CART</div>
@@ -47,7 +46,7 @@
             </div>
           </div>
 
-          <div class="item-price">€{{ item.price }}</div>
+          <div class="item-price">{{ item.price | currency:'USD':'symbol':'1.2-2' }}</div>
 
           <div class="item-quantity">
             <div class="quantity-controls">
@@ -62,7 +61,7 @@
           </div>
 
           <div class="item-subtotal">
-            <span>€{{ (item.price * item.quantity).toFixed(2) }}</span>
+            <span>{{ (item.price * item.quantity) | currency:'USD':'symbol':'1.2-2' }}</span>
             <button class="remove-btn" (click)="removeItem(item.id)" title="Remove">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -75,12 +74,12 @@
     </div>
   </div>
 
-  <!-- Footer -->
+ 
   <div *ngIf="getCartItems().length > 0" class="cart-footer">
     <div class="total-section">
       <div class="total-row">
         <span class="total-label">Total</span>
-        <span class="total-amount">€{{ getTotal().toFixed(2) }}</span>
+        <span class="total-amount">{{ getTotal() | currency:'USD':'symbol':'1.2-2' }}</span>
       </div>
       <p class="shipping-note">Shipping Fee will be calculated at the time of purchase</p>
     </div>

@@ -25,12 +25,9 @@ export class AuthComponent {
     private router: Router,
     private authService: AuthService
   ) {
-    // თუ უკვე ავტორიზებულია
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/']);
     }
-
-    // "Remember Me" ფუნქციონალი
     this.loadSavedCredentials();
   }
 
@@ -48,7 +45,6 @@ export class AuthComponent {
     this.errorMessage = '';
     this.successMessage = '';
 
-    // ვალიდაცია
     if (!this.email || !this.password) {
       this.errorMessage = 'Please fill in all fields';
       return;
@@ -56,26 +52,22 @@ export class AuthComponent {
 
     this.loading = true;
 
-    // ავტორიზაცია JWT-ით
     const result = this.authService.login(this.email, this.password);
     this.loading = false;
     
     if (result.success) {
       this.successMessage = result.message;
 
-      // "Remember Me" შენახვა
       if (this.rememberMe) {
         this.saveCredentials();
       } else {
         this.clearSavedCredentials();
       }
 
-      // JWT ტოკენის ლოგირება (development-ში)
       if (result.token) {
         console.log('🔑 JWT Token received:', result.token);
       }
 
-      // მომხმარებლის როლის მიხედვით redirect
       const currentUser = this.authService.getCurrentUser();
       setTimeout(() => {
         if (currentUser?.role === 'admin') {
@@ -89,7 +81,6 @@ export class AuthComponent {
     }
   }
 
-  // "Remember Me" ფუნქციონალი
   private saveCredentials() {
     localStorage.setItem('remembered_email', this.email);
   }
@@ -119,3 +110,5 @@ export class AuthComponent {
     this.successMessage = '';
   }
 }
+
+export default AuthComponent;

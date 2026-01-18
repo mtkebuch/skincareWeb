@@ -18,6 +18,7 @@ export class HeaderComponent implements OnInit {
   showLogoutModal: boolean = false;
   isCartOpen: boolean = false;
   cartItemCount: number = 0;
+  isAdminRoute: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -27,7 +28,7 @@ export class HeaderComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Cart subscriptions
+    
     this.cartService.cartItems$.subscribe(() => {
       this.cartItemCount = this.cartService.getCartItemCount();
     });
@@ -36,14 +37,17 @@ export class HeaderComponent implements OnInit {
       this.isCartOpen = isOpen;
     });
 
-    // Check for logout toast on navigation
+    
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
-    ).subscribe(() => {
+    ).subscribe((event: NavigationEnd) => {
+      this.isAdminRoute = event.url.startsWith('/admin');
       this.checkLogoutToast();
+      this.cdr.detectChanges();
     });
 
-    // Initial check
+    
+    this.isAdminRoute = this.router.url.startsWith('/admin');
     this.checkLogoutToast();
   }
 
@@ -51,13 +55,9 @@ export class HeaderComponent implements OnInit {
     const justLoggedOut = sessionStorage.getItem('justLoggedOut');
     if (justLoggedOut === 'true') {
       sessionStorage.removeItem('justLoggedOut');
-      
-      // Small delay to ensure page is rendered
       setTimeout(() => {
         this.showLogoutToast = true;
         this.cdr.detectChanges();
-        
-        // Hide after 3 seconds
         setTimeout(() => {
           this.showLogoutToast = false;
           this.cdr.detectChanges();
@@ -100,16 +100,29 @@ export class HeaderComponent implements OnInit {
 
   confirmLogout(): void {
     this.showLogoutModal = false;
-    this.authService.logout();
     
-    // Set flag for toast
+    
+    this.cartService.clearCart();
+    
+    this.authService.logout();
     sessionStorage.setItem('justLoggedOut', 'true');
     
-    // Navigate to homepage
-    this.router.navigate(['/']);
+    
+    this.router.navigate(['/shop']);
   }
 
   cancelLogout(): void {
     this.showLogoutModal = false;
+  }
+
+  handleScannerClick(): void {
+   
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser && currentUser.role === 'admin') {
+      this.router.navigate(['/admin/dashboard']);
+    } else {
+      
+      console.log('Access denied: Admin only');
+    }
   }
 }

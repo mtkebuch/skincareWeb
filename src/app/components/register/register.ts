@@ -9,127 +9,180 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './register.html',
-  styleUrls: ['../auth/auth.css']
+  styleUrls: ['../auth/auth.css']  
 })
+
 export class RegisterComponent {
   firstName: string = '';
   lastName: string = '';
   email: string = '';
   password: string = '';
   confirmPassword: string = '';
-  role: 'user' | 'admin' = 'user'; // როლის არჩევა
+  
   loading: boolean = false;
   errorMessage: string = '';
   successMessage: string = '';
 
-  emailError: string = '';
-  passwordError: string = '';
+  
   firstNameError: string = '';
   lastNameError: string = '';
+  emailError: string = '';
+  passwordError: string = '';
   confirmPasswordError: string = '';
 
-  // Admin Secret Code
-  showAdminOption: boolean = false;
-  adminSecretCode: string = '';
-  ADMIN_SECRET = 'ADMIN2024'; // ეს უნდა იყოს backend-ზე!
+  
+  passwordRequirements = {
+    minLength: false,
+    hasUppercase: false,
+    hasLowercase: false,
+    hasNumber: false,
+    hasSpecial: false
+  };
 
   constructor(
     private router: Router,
     private authService: AuthService
   ) {
-    // თუ უკვე ავტორიზებულია, redirect home-ზე
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/']);
     }
   }
 
+
+
+  validateFirstNameField() {
+    if (!this.firstName) {
+      this.firstNameError = 'First name is required';
+    } else if (this.firstName.length < 2) {
+      this.firstNameError = 'First name must be at least 2 characters';
+    } else {
+      this.firstNameError = '';
+    }
+  }
+
+  validateLastNameField() {
+    if (!this.lastName) {
+      this.lastNameError = 'Last name is required';
+    } else if (this.lastName.length < 2) {
+      this.lastNameError = 'Last name must be at least 2 characters';
+    } else {
+      this.lastNameError = '';
+    }
+  }
+
   validateEmailField() {
-    this.emailError = this.authService.validateEmail(this.email) || '';
-    
-    if (!this.emailError && this.authService.emailExists(this.email)) {
-      this.emailError = 'An account with this email already exists';
+    if (!this.email) {
+      this.emailError = 'Email is required';
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(this.email)) {
+        this.emailError = 'Please enter a valid email address';
+      } else {
+        this.emailError = '';
+      }
     }
   }
 
   validatePasswordField() {
-    this.passwordError = this.authService.validatePassword(this.password) || '';
-    this.validateConfirmPasswordField();
-  }
-
-  validateFirstNameField() {
-    this.firstNameError = this.authService.validateName(this.firstName, 'First name') || '';
-  }
-
-  validateLastNameField() {
-    this.lastNameError = this.authService.validateName(this.lastName, 'Last name') || '';
+    if (!this.password) {
+      this.passwordError = 'Password is required';
+    } else if (!this.isPasswordValid()) {
+      this.passwordError = 'Password does not meet all requirements';
+    } else {
+      this.passwordError = '';
+    }
   }
 
   validateConfirmPasswordField() {
-    if (this.confirmPassword && this.password !== this.confirmPassword) {
+    if (!this.confirmPassword) {
+      this.confirmPasswordError = 'Please confirm your password';
+    } else if (this.password !== this.confirmPassword) {
       this.confirmPasswordError = 'Passwords do not match';
     } else {
       this.confirmPasswordError = '';
     }
   }
 
-  // Admin option toggle
-  toggleAdminOption() {
-    this.showAdminOption = !this.showAdminOption;
-    if (!this.showAdminOption) {
-      this.role = 'user';
-      this.adminSecretCode = '';
+
+
+  onPasswordChange() {
+    this.errorMessage = '';
+    this.passwordError = '';
+    this.updatePasswordRequirements();
+    
+   
+    if (this.confirmPassword) {
+      this.validateConfirmPasswordField();
     }
   }
+
+  onConfirmPasswordChange() {
+    this.errorMessage = '';
+    this.confirmPasswordError = '';
+    
+    
+    if (this.confirmPassword) {
+      this.validateConfirmPasswordField();
+    }
+  }
+
+  updatePasswordRequirements() {
+    this.passwordRequirements = {
+      minLength: this.password.length >= 8,
+      hasUppercase: /[A-Z]/.test(this.password),
+      hasLowercase: /[a-z]/.test(this.password),
+      hasNumber: /[0-9]/.test(this.password),
+      hasSpecial: /[!@#$%^&*]/.test(this.password)
+    };
+  }
+
+  isPasswordValid(): boolean {
+    return Object.values(this.passwordRequirements).every(req => req === true);
+  }
+
+  
 
   async register() {
     this.errorMessage = '';
     this.successMessage = '';
 
-    // ვალიდაციები
+    
     this.validateFirstNameField();
     this.validateLastNameField();
     this.validateEmailField();
     this.validatePasswordField();
     this.validateConfirmPasswordField();
 
+    
     if (this.firstNameError || this.lastNameError || this.emailError || 
         this.passwordError || this.confirmPasswordError) {
-      this.errorMessage = 'Please fix the errors above';
+      this.errorMessage = 'Please fix all errors before submitting';
       return;
-    }
-
-    if (this.password !== this.confirmPassword) {
-      this.errorMessage = 'Passwords do not match';
-      return;
-    }
-
-    // Admin role-ის შემოწმება
-    if (this.role === 'admin') {
-      if (this.adminSecretCode !== this.ADMIN_SECRET) {
-        this.errorMessage = 'Invalid admin secret code';
-        return;
-      }
     }
 
     this.loading = true;
 
-    // რეგისტრაცია როლით
-    const result = this.authService.register(
-      this.email,
-      this.password,
-      this.firstName,
-      this.lastName,
-      this.role
-    );
+    
+    const result = this.authService.register({
+      firstName: this.firstName,
+      lastName: this.lastName,
+      email: this.email,
+      password: this.password,
+      role: 'user'
+    });
 
     this.loading = false;
 
     if (result.success) {
       this.successMessage = result.message;
-      console.log(`✅ Registered as ${this.role}`);
+
+      if (result.token) {
+        console.log('🔑 JWT Token received:', result.token);
+      }
+
       setTimeout(() => {
-        this.router.navigate(['/login']);
-      }, 1500);
+        this.router.navigate(['/']);
+      }, 1000);
     } else {
       this.errorMessage = result.message;
     }
@@ -144,3 +197,5 @@ export class RegisterComponent {
     this.successMessage = '';
   }
 }
+
+export default RegisterComponent;

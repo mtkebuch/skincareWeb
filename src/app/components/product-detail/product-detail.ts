@@ -4,7 +4,7 @@ import { ActivatedRoute, RouterModule, Router, NavigationStart } from '@angular/
 import { SupabaseService } from '../../services/supabase.service';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
-import { Subscription } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -76,7 +76,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy, AfterViewInit 
     }
   }
 
-  async loadCurrentProduct() {
+  loadCurrentProduct() {
     const id = this.route.snapshot.paramMap.get('id');
     console.log('Loading product ID:', id);
 
@@ -94,40 +94,40 @@ export class ProductDetailComponent implements OnInit, OnDestroy, AfterViewInit 
     this.error = null;
     this.cdr.detectChanges();
 
-    try {
-      // პირველ რიგში ვტვირთავთ ყველა პროდუქტს პარალელურად
-      const [currentProduct, allProducts] = await Promise.all([
-        this.supabaseService.getProductById(id),
-        this.supabaseService.getProducts()
-      ]);
-      
-      if (!currentProduct) {
-        this.error = 'Product not found';
+    
+    forkJoin({
+      currentProduct: this.supabaseService.getProductById(id),
+      allProducts: this.supabaseService.getProducts()
+    }).subscribe({
+      next: (result) => {
+        if (!result.currentProduct) {
+          this.error = 'Product not found';
+          this.loading = false;
+          this.loadingSuggestions = false;
+          this.cdr.detectChanges();
+          return;
+        }
+
+        this.product = result.currentProduct;
+        console.log('Product loaded:', this.product.name);
+        
+        
+        const filtered = result.allProducts.filter((p: any) => p.id !== id);
+        this.suggestedProducts = this.shuffleArray(filtered).slice(0, 4);
+        console.log('Suggested products loaded:', this.suggestedProducts.length);
+        
         this.loading = false;
         this.loadingSuggestions = false;
         this.cdr.detectChanges();
-        return;
+      },
+      error: (err) => {
+        console.error('Error:', err);
+        this.error = 'Error loading product';
+        this.loading = false;
+        this.loadingSuggestions = false;
+        this.cdr.detectChanges();
       }
-
-      this.product = currentProduct;
-      console.log('Product loaded:', this.product.name);
-      
-      // ვფილტრავთ და ვქმნით suggested products-ს
-      const filtered = allProducts.filter(p => p.id !== id);
-      this.suggestedProducts = this.shuffleArray(filtered).slice(0, 4);
-      console.log('Suggested products loaded:', this.suggestedProducts.length);
-      
-      this.loading = false;
-      this.loadingSuggestions = false;
-      this.cdr.detectChanges();
-      
-    } catch (err) {
-      console.error('Error:', err);
-      this.error = 'Error loading product';
-      this.loading = false;
-      this.loadingSuggestions = false;
-      this.cdr.detectChanges();
-    }
+    });
   }
 
   private shuffleArray(array: any[]): any[] {

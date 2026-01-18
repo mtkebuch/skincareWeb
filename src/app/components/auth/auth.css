@@ -23,7 +23,7 @@ input, button, textarea, select {
   overflow: hidden;
 }
 
-/* Left Side - Image */
+
 .auth-image {
   background: #fff;
   display: flex;
@@ -39,7 +39,7 @@ input, button, textarea, select {
   object-fit: cover;
 }
 
-/* Right Side - Content */
+
 .auth-content {
   background: #fff;
   display: flex;
@@ -47,7 +47,7 @@ input, button, textarea, select {
   height: 100vh;
 }
 
-/* Header */
+
 .auth-header {
   width: 100%;
   background: #fff;
@@ -134,7 +134,7 @@ input, button, textarea, select {
   opacity: 0.6;
 }
 
-/* Form Wrapper */
+
 .form-wrapper {
   flex: 1;
   display: flex;
@@ -169,7 +169,7 @@ input, button, textarea, select {
   margin-bottom: 20px;
 }
 
-/* Alert Messages */
+
 .alert {
   display: flex;
   align-items: flex-start;
@@ -213,7 +213,7 @@ input, button, textarea, select {
   color: #2f855a;
 }
 
-/* Form Inputs */
+
 .input-group {
   position: relative;
   margin-bottom: 25px;
@@ -321,7 +321,7 @@ input, button, textarea, select {
   font-weight: bold;
 }
 
-/* Remember Me & Forgot Password Row */
+
 .form-options {
   display: flex;
   justify-content: space-between;
@@ -370,7 +370,7 @@ input, button, textarea, select {
   color: #1a1a1a;
 }
 
-/* Buttons */
+
 .login-btn {
   width: 100%;
   padding: 13px;
@@ -394,7 +394,7 @@ input, button, textarea, select {
   cursor: not-allowed;
 }
 
-/* Register Section */
+
 .register-section {
   padding-top: 35px;
   border-top: 1px solid #e8e8e8;
@@ -447,7 +447,7 @@ input, button, textarea, select {
   gap: 16px;
 }
 
-/* Resend Code Section */
+
 .resend-code {
   text-align: center;
   margin-top: -10px;
@@ -473,7 +473,7 @@ input, button, textarea, select {
   text-decoration: none;
 }
 
-/* Back to Login */
+
 .back-to-login {
   text-align: center;
   margin-top: 0;
@@ -507,7 +507,7 @@ input, button, textarea, select {
   transform: translateX(-2px);
 }
 
-/* Loading State */
+
 .loading-state {
   text-align: center;
   padding: 40px 0;
@@ -538,7 +538,7 @@ input, button, textarea, select {
   margin-bottom: 30px;
 }
 
-/* Responsive */
+
 @media (max-width: 1024px) {
   .auth-container {
     grid-template-columns: 1fr;

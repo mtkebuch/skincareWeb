@@ -1,4 +1,3 @@
-// cart.service.ts
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -8,6 +7,7 @@ export interface CartItem {
   price: number;
   quantity: number;
   image: string;
+  image_url?: string;  
   volume: string;
 }
 
@@ -50,7 +50,7 @@ export class CartService {
 
     this.saveCartToStorage();
     
-    // Open cart sidebar automatically
+    
     this.openCart();
   }
 

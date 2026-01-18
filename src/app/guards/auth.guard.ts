@@ -2,8 +2,8 @@ import { inject } from '@angular/core';
 import { Router, CanActivateFn } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
-// ძირითადი ავტორიზაციის Guard
-export const authGuard: CanActivateFn = () => {
+
+export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
@@ -11,12 +11,14 @@ export const authGuard: CanActivateFn = () => {
     return true;
   }
 
-  // არაავტორიზებული მომხმარებლები გადადიან login-ზე
-  router.navigate(['/login']);
+ 
+  router.navigate(['/login'], { 
+    queryParams: { returnUrl: state.url }
+  });
   return false;
 };
 
-// Guest Guard - მხოლოდ გაუსულებელი მომხმარებლებისთვის
+
 export const guestGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
@@ -25,40 +27,44 @@ export const guestGuard: CanActivateFn = () => {
     return true;
   }
 
-  // ავტორიზებული მომხმარებლები გადადიან მთავარ გვერდზე
+  
   router.navigate(['/']);
   return false;
 };
 
-// Admin Guard - მხოლოდ ადმინებისთვის
-export const adminGuard: CanActivateFn = () => {
+
+export const adminGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  // პირველ რიგში ვამოწმებთ ავტორიზაციას
+ 
   if (!authService.isAuthenticated()) {
-    router.navigate(['/login']);
+    router.navigate(['/login'], { 
+      queryParams: { returnUrl: state.url }
+    });
     return false;
   }
 
-  // შემდეგ ვამოწმებთ ადმინის როლს
+  
   if (authService.isAdmin()) {
     return true;
   }
 
-  // არა-ადმინები გადადიან მთავარ გვერდზე
-  alert('Access denied. Admin privileges required.');
+  
+  console.warn('Access denied. Admin privileges required.');
   router.navigate(['/']);
   return false;
 };
 
-// User Guard - მხოლოდ რეგულარული მომხმარებლებისთვის (არა ადმინებისთვის)
-export const userGuard: CanActivateFn = () => {
+
+export const userGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
   if (!authService.isAuthenticated()) {
-    router.navigate(['/login']);
+    router.navigate(['/login'], { 
+      queryParams: { returnUrl: state.url }
+    });
     return false;
   }
 
@@ -70,14 +76,16 @@ export const userGuard: CanActivateFn = () => {
   return false;
 };
 
-// Role-based Guard Factory - ნებისმიერი როლისთვის
+
 export const roleGuard = (allowedRoles: ('user' | 'admin')[]): CanActivateFn => {
-  return () => {
+  return (route, state) => {
     const authService = inject(AuthService);
     const router = inject(Router);
 
     if (!authService.isAuthenticated()) {
-      router.navigate(['/login']);
+      router.navigate(['/login'], { 
+        queryParams: { returnUrl: state.url }
+      });
       return false;
     }
 
@@ -86,7 +94,7 @@ export const roleGuard = (allowedRoles: ('user' | 'admin')[]): CanActivateFn => 
       return true;
     }
 
-    alert('Access denied. You do not have permission to access this page.');
+    console.warn('Access denied. You do not have permission to access this page.');
     router.navigate(['/']);
     return false;
   };

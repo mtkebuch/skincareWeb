@@ -1,16 +1,16 @@
 <div class="auth-container">
-  <!-- Left Side - Image -->
+  
   <div class="auth-image">
     <img src="assets/journal/authPhoto.jpg" alt="Authentication">
   </div>
 
-  <!-- Right Side - Form -->
+ 
   <div class="auth-content">
-    <!-- Form Content -->
+ 
     <div class="form-wrapper">
       <h1 class="form-title">Log in to your account</h1>
 
-      <!-- Error Message -->
+     
       <div *ngIf="errorMessage" class="alert alert-error">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="10"/>
@@ -20,7 +20,7 @@
         <span>{{ errorMessage }}</span>
       </div>
 
-      <!-- Success Message -->
+    
       <div *ngIf="successMessage" class="alert alert-success">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
@@ -66,7 +66,7 @@
           </button>
         </div>
 
-        <!-- Remember Me & Forgot Password -->
+       
         <div class="form-options">
           <label class="remember-me">
             <input 

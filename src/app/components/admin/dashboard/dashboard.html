@@ -4,7 +4,7 @@
     <p class="subtitle">Welcome back, {{ currentUser?.firstName }}! Here's what's happening with your store.</p>
   </div>
 
-  <!-- Stats Grid -->
+  
   <div class="stats-grid">
     <div class="stat-card users">
       <div class="stat-icon">
@@ -17,8 +17,7 @@
       </div>
       <div class="stat-content">
         <p class="stat-label">Total Users</p>
-        <h3 class="stat-value">{{ stats.totalUsers }}</h3>
-        <p class="stat-change positive">+{{ newUsersThisMonth }} this month</p>
+        <h3 class="stat-value">{{ stats.totalUsers | number }}</h3>
       </div>
     </div>
 
@@ -32,7 +31,7 @@
       </div>
       <div class="stat-content">
         <p class="stat-label">Total Orders</p>
-        <h3 class="stat-value">{{ stats.totalOrders }}</h3>
+        <h3 class="stat-value">{{ stats.totalOrders | number }}</h3>
         <p class="stat-change positive">{{ stats.pendingOrders }} pending</p>
       </div>
     </div>
@@ -46,8 +45,7 @@
       </div>
       <div class="stat-content">
         <p class="stat-label">Total Revenue</p>
-        <h3 class="stat-value">${{ stats.totalRevenue.toFixed(2) }}</h3>
-        <p class="stat-change positive">+12% from last month</p>
+        <h3 class="stat-value">{{ stats.totalRevenue | currency }}</h3>
       </div>
     </div>
 
@@ -59,13 +57,13 @@
       </div>
       <div class="stat-content">
         <p class="stat-label">Completed Orders</p>
-        <h3 class="stat-value">{{ stats.completedOrders }}</h3>
-        <p class="stat-change">{{ completionRate }}% completion rate</p>
+        <h3 class="stat-value">{{ stats.completedOrders | number }}</h3>
+        <p class="stat-change">{{ completionRate | percent:'1.0-0' }} completion rate</p>
       </div>
     </div>
   </div>
 
-  <!-- Quick Actions -->
+ 
   <div class="quick-actions-section">
     <h2>Quick Actions</h2>
     <div class="actions-grid">
@@ -104,22 +102,6 @@
         </svg>
         <span>Back to Store</span>
       </button>
-    </div>
-  </div>
-
-  <!-- Recent Activity -->
-  <div class="recent-activity">
-    <h2>Recent Activity</h2>
-    <div class="activity-list">
-      <div class="activity-item" *ngFor="let activity of recentActivities">
-        <div class="activity-icon" [class]="activity.type">
-          <span>{{ activity.icon }}</span>
-        </div>
-        <div class="activity-content">
-          <p class="activity-text">{{ activity.text }}</p>
-          <p class="activity-time">{{ activity.time }}</p>
-        </div>
-      </div>
     </div>
   </div>
 </div>

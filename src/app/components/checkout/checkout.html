@@ -1,5 +1,5 @@
 <div class="checkout-container">
-  <!-- Header -->
+
   <div class="checkout-header">
     <button class="back-btn" (click)="goBack()">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -12,10 +12,10 @@
   </div>
 
   <div class="checkout-content">
-    <!-- Left Side - Forms -->
+   
     <div class="checkout-left">
       
-      <!-- Success/Error Messages -->
+      
       <div *ngIf="errorMessage" class="alert alert-error">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="10"/>
@@ -33,7 +33,7 @@
         <span>{{ successMessage }}</span>
       </div>
 
-      <!-- Shipping Information -->
+     
       <div class="checkout-section">
         <h2 class="section-title">Shipping Information</h2>
         
@@ -132,7 +132,7 @@
         </div>
       </div>
 
-      <!-- Payment Method -->
+     
       <div class="checkout-section">
         <h2 class="section-title">Payment Method</h2>
         
@@ -170,7 +170,7 @@
           </label>
         </div>
 
-        <!-- Card Details (shown only if card payment selected) -->
+        
         <div *ngIf="paymentMethod === 'card'" class="card-details">
           <div class="form-group">
             <label>Card Number *</label>
@@ -225,7 +225,7 @@
         </div>
       </div>
 
-      <!-- Terms and Conditions -->
+      
       <div class="checkout-section">
         <label class="checkbox-container">
           <input 
@@ -238,7 +238,7 @@
       </div>
     </div>
 
-    <!-- Right Side - Order Summary -->
+    
     <div class="checkout-right">
       <div class="order-summary">
         <h2 class="summary-title">Order Summary</h2>
@@ -251,7 +251,7 @@
               <p>{{ item.volume }}</p>
               <p>Qty: {{ item.quantity }}</p>
             </div>
-            <div class="item-price">€{{ item.price * item.quantity }}</div>
+            <div class="item-price">${{ item.price * item.quantity }}</div>
           </div>
         </div>
 
@@ -260,15 +260,15 @@
         <div class="summary-totals">
           <div class="summary-row">
             <span>Subtotal</span>
-            <span>€{{ getSubtotal() }}</span>
+            <span>${{ getSubtotal() }}</span>
           </div>
           <div class="summary-row">
             <span>Shipping</span>
-            <span>{{ getShippingCost() === 0 ? 'FREE' : '€' + getShippingCost() }}</span>
+            <span>{{ getShippingCost() === 0 ? 'FREE' : '$' + getShippingCost() }}</span>
           </div>
           <div class="summary-row total">
             <span>Total</span>
-            <span>€{{ getTotal() }}</span>
+            <span>${{ getTotal() }}</span>
           </div>
         </div>
 

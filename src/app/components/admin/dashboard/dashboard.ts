@@ -28,35 +28,7 @@ export class DashboardComponent implements OnInit {
     completedOrders: 0
   };
 
-  newUsersThisMonth: number = 0;
   completionRate: number = 0;
-
-  recentActivities = [
-    {
-      type: 'user',
-      icon: '👤',
-      text: 'New user registered: john@example.com',
-      time: '2 hours ago'
-    },
-    {
-      type: 'order',
-      icon: '🛒',
-      text: 'New order #12345 placed - $299.99',
-      time: '3 hours ago'
-    },
-    {
-      type: 'order',
-      icon: '✅',
-      text: 'Order #12344 completed and shipped',
-      time: '5 hours ago'
-    },
-    {
-      type: 'user',
-      icon: '👤',
-      text: 'New admin user added: admin@store.com',
-      time: '1 day ago'
-    }
-  ];
 
   constructor(
     private authService: AuthService,
@@ -69,11 +41,10 @@ export class DashboardComponent implements OnInit {
   }
 
   loadDashboardData(): void {
-    // Users
+   
     this.stats.totalUsers = this.authService.getRegisteredUsersCount();
-    this.newUsersThisMonth = Math.floor(this.stats.totalUsers * 0.2);
 
-    // Orders
+   
     const orders = JSON.parse(localStorage.getItem('orders') || '[]');
     this.stats.totalOrders = orders.length;
     this.stats.pendingOrders = orders.filter((o: any) => o.status === 'pending').length;
@@ -81,17 +52,28 @@ export class DashboardComponent implements OnInit {
       o.status === 'delivered' || o.status === 'completed'
     ).length;
 
-    // Revenue
-    this.stats.totalRevenue = orders.reduce((sum: number, order: any) => 
-      sum + (order.total || 0), 0
-    );
+    
+    this.stats.totalRevenue = orders.reduce((sum: number, order: any) => {
+      if (order.items && Array.isArray(order.items)) {
+        const orderTotal = order.items.reduce((itemSum: number, item: any) => {
+          const price = parseFloat(item.price) || 0;
+          const quantity = parseInt(item.quantity) || 1;
+          return itemSum + (price * quantity);
+        }, 0);
+        return sum + orderTotal;
+      }
+     
+      return sum + (parseFloat(order.total) || 0);
+    }, 0);
 
-    // Completion Rate
+   
     if (this.stats.totalOrders > 0) {
       this.completionRate = Math.round(
         (this.stats.completedOrders / this.stats.totalOrders) * 100
       );
     }
+
+    console.log('📊 Dashboard Stats:', this.stats);
   }
 
   navigateTo(path: string): void {

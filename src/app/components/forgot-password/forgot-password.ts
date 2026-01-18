@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, ActivatedRoute, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -12,26 +12,18 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['../auth/auth.css']
 })
 export class ForgotPasswordComponent implements OnInit {
-  // View mode: 'request', 'verify', or 'reset'
   mode: 'request' | 'verify' | 'reset' = 'request';
   
-  // Request password reset fields
   email: string = '';
-  
-  // Verification code
   verificationCode: string = '';
   enteredCode: string = '';
-  
-  // Reset password fields
   newPassword: string = '';
   confirmPassword: string = '';
   
-  // UI states
   loading: boolean = false;
   errorMessage: string = '';
   successMessage: string = '';
 
-  // Password requirements
   passwordRequirements = {
     minLength: false,
     hasUppercase: false,
@@ -42,7 +34,6 @@ export class ForgotPasswordComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
     private authService: AuthService
   ) {}
 
@@ -50,8 +41,7 @@ export class ForgotPasswordComponent implements OnInit {
     this.mode = 'request';
   }
 
-  // ==================== REQUEST PASSWORD RESET ====================
-  
+ 
   requestReset() {
     this.errorMessage = '';
     this.successMessage = '';
@@ -61,17 +51,15 @@ export class ForgotPasswordComponent implements OnInit {
       return;
     }
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(this.email)) {
       this.errorMessage = 'Please enter a valid email address';
       return;
     }
 
-    // Generate 6-digit verification code
+    
     this.verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
     
-    // Log to console
     console.log('═══════════════════════════════════════');
     console.log('📧 PASSWORD RESET VERIFICATION CODE');
     console.log('═══════════════════════════════════════');
@@ -79,12 +67,10 @@ export class ForgotPasswordComponent implements OnInit {
     console.log('Code:', this.verificationCode);
     console.log('═══════════════════════════════════════');
 
-    // Instant transition to verify mode
     this.mode = 'verify';
   }
 
-  // ==================== VERIFY CODE ====================
-  
+ 
   verifyCode() {
     this.errorMessage = '';
     this.successMessage = '';
@@ -99,7 +85,6 @@ export class ForgotPasswordComponent implements OnInit {
       return;
     }
 
-    // Instant transition to reset mode
     this.mode = 'reset';
   }
 
@@ -107,7 +92,6 @@ export class ForgotPasswordComponent implements OnInit {
     this.enteredCode = '';
     this.errorMessage = '';
     
-    // Generate new code
     this.verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
     
     console.log('═══════════════════════════════════════');
@@ -124,8 +108,7 @@ export class ForgotPasswordComponent implements OnInit {
     }, 1500);
   }
 
-  // ==================== RESET PASSWORD ====================
-  
+ 
   onPasswordChange() {
     this.errorMessage = '';
     this.updatePasswordRequirements();
@@ -164,17 +147,10 @@ export class ForgotPasswordComponent implements OnInit {
       return;
     }
 
-    // Update password directly through localStorage AND reload AuthService
-    const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-    const userIndex = users.findIndex((u: any) => u.email.toLowerCase() === this.email.toLowerCase());
+   
+    const success = this.authService.updatePassword(this.email, this.newPassword);
     
-    if (userIndex !== -1) {
-      users[userIndex].password = this.newPassword;
-      localStorage.setItem('registeredUsers', JSON.stringify(users));
-      
-      // Force AuthService to reload users from localStorage
-      this.authService['loadUsersFromStorage']();
-      
+    if (success) {
       console.log('═══════════════════════════════════════');
       console.log('✅ PASSWORD RESET SUCCESSFUL');
       console.log('═══════════════════════════════════════');
@@ -184,7 +160,6 @@ export class ForgotPasswordComponent implements OnInit {
       
       this.successMessage = 'Password reset successful!';
       
-      // Instant redirect to login
       setTimeout(() => {
         this.router.navigateByUrl('/login');
       }, 500);
@@ -193,8 +168,7 @@ export class ForgotPasswordComponent implements OnInit {
     }
   }
 
-  // ==================== NAVIGATION ====================
-  
+ 
   goToLogin() {
     this.router.navigate(['/login']);
   }

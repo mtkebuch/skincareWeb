@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
 
-/* Orders Container */
+
 .orders-container {
   font-family: 'Arimo', sans-serif;
   max-width: 1200px;
@@ -12,7 +12,7 @@
   margin-bottom: 40px;
 }
 
-/* Back Button - Product Detail Style */
+
 .back-btn,
 .back-to-orders .back-btn,
 .orders-header .back-btn,
@@ -97,7 +97,7 @@ a.back-btn:hover {
   margin: 0;
 }
 
-/* Empty State */
+
 .empty-state {
   text-align: center;
   padding: 80px 20px;
@@ -159,7 +159,7 @@ a.back-btn:hover {
   transform: translateX(3px);
 }
 
-/* Orders List */
+
 .orders-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -373,7 +373,7 @@ a.back-btn:hover {
   transform: translateX(3px);
 }
 
-/* Order Details Section */
+
 .confirmation-container {
   font-family: 'Arimo', sans-serif;
   max-width: 800px;
@@ -385,7 +385,7 @@ a.back-btn:hover {
   margin-bottom: 30px;
 }
 
-/* Success Animation - Improved Design */
+
 .success-animation {
   display: flex;
   justify-content: center;
@@ -454,7 +454,7 @@ a.back-btn:hover {
   }
 }
 
-/* Success Message */
+
 .success-message {
   text-align: center;
   margin-bottom: 50px;
@@ -476,7 +476,7 @@ a.back-btn:hover {
   line-height: 1.6;
 }
 
-/* Cards */
+
 .order-details-card,
 .info-card {
   background: #f7f7f7;
@@ -557,7 +557,7 @@ a.back-btn:hover {
   text-transform: capitalize;
 }
 
-/* Info Cards */
+
 .info-card h3 {
   font-family: 'Arimo', sans-serif;
   font-size: 18px;
@@ -591,7 +591,7 @@ a.back-btn:hover {
   flex-shrink: 0;
 }
 
-/* Order Items */
+
 .order-items {
   display: flex;
   flex-direction: column;
@@ -643,7 +643,7 @@ a.back-btn:hover {
   align-self: center;
 }
 
-/* Summary */
+
 .summary-card {
   background: #2d2d2d;
   color: #fff;
@@ -680,7 +680,7 @@ a.back-btn:hover {
   border-top: 2px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Actions */
+
 .confirmation-actions {
   display: flex;
   justify-content: center;
@@ -719,7 +719,7 @@ a.back-btn:hover {
   transform: translateX(3px);
 }
 
-/* Additional Info */
+
 .additional-info {
   text-align: center;
   padding: 20px;
@@ -745,7 +745,7 @@ a.back-btn:hover {
   flex-shrink: 0;
 }
 
-/* Loading State */
+
 .loading-state {
   text-align: center;
   padding: 100px 20px;
@@ -772,7 +772,7 @@ a.back-btn:hover {
   color: #666;
 }
 
-/* Responsive */
+
 @media (max-width: 992px) {
   .orders-list {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));

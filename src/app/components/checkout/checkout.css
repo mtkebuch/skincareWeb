@@ -7,7 +7,7 @@
   padding: 40px 20px 80px 20px;
 }
 
-/* Header */
+
 .checkout-header {
   margin-bottom: 40px;
   padding-top: 20px;
@@ -54,14 +54,14 @@
   letter-spacing: 0.5px;
 }
 
-/* Content Layout */
+
 .checkout-content {
   display: grid;
   grid-template-columns: 1fr 400px;
   gap: 60px;
 }
 
-/* Left Side - Forms */
+
 .checkout-left {
   max-width: 700px;
 }
@@ -85,7 +85,7 @@
   letter-spacing: 0.3px;
 }
 
-/* Alert Messages */
+
 .alert {
   display: flex;
   align-items: flex-start;
@@ -127,7 +127,7 @@
   color: #2f855a;
 }
 
-/* Forms */
+
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -184,7 +184,7 @@
   margin-top: 6px;
 }
 
-/* Payment Methods */
+
 .payment-methods {
   display: grid;
   gap: 15px;
@@ -232,14 +232,14 @@
   color: #2d2d2d;
 }
 
-/* Card Details */
+
 .card-details {
   margin-top: 25px;
   padding-top: 25px;
   border-top: 1px solid #e8e8e8;
 }
 
-/* Checkbox */
+
 .checkbox-container {
   display: flex;
   align-items: flex-start;
@@ -307,7 +307,7 @@
   text-decoration: none;
 }
 
-/* Right Side - Order Summary */
+
 .checkout-right {
   position: sticky;
   top: 20px;
@@ -447,7 +447,7 @@
   color: #38a169;
 }
 
-/* Responsive */
+
 @media (max-width: 1024px) {
   .checkout-content {
     grid-template-columns: 1fr;

@@ -1,8 +1,3 @@
-/* ============================================
-   CART SIDEBAR STYLES WITH MINIMALIST BADGE
-   ============================================ */
-
-/* Overlay */
 .cart-overlay {
   position: fixed;
   top: 0;
@@ -40,7 +35,7 @@
   transform: translateX(0);
 }
 
-/* Cart Icon Badge */
+
 .cart-icon {
   position: relative;
   background: none;
@@ -71,7 +66,7 @@
   box-shadow: 0 2px 6px rgba(255, 68, 68, 0.4);
 }
 
-/* Header */
+
 .cart-header {
   padding: 24px 32px;
   border-bottom: 1px solid #e5e5e5;
@@ -103,7 +98,7 @@
   opacity: 0.6;
 }
 
-/* Content */
+
 .cart-content {
   flex: 1;
   overflow-y: auto;
@@ -129,7 +124,7 @@
   font-size: 16px;
 }
 
-/* Shipping Notice */
+
 .shipping-notice {
   background: #f8f8f8;
   padding: 16px;
@@ -145,7 +140,7 @@
   margin: 0;
 }
 
-/* Items List */
+
 .items-list {
   margin-top: 24px;
 }
@@ -294,7 +289,7 @@
   opacity: 1;
 }
 
-/* Footer */
+
 .cart-footer {
   padding: 24px 32px;
   border-top: 1px solid #e5e5e5;
@@ -352,7 +347,7 @@
   background: #333;
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
   .cart-sidebar {
     width: 100%;

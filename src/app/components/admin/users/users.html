@@ -1,0 +1,163 @@
+<div class="users-container">
+  <div class="users-header">
+    <h1>Users Management</h1>
+    <div class="header-stats">
+      <div class="stat">
+        <span class="stat-value">{{ users.length }}</span>
+        <span class="stat-label">Total Users</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">{{ getAdminCount() }}</span>
+        <span class="stat-label">Admins</span>
+      </div>
+    </div>
+  </div>
+
+ 
+  <div class="filters-section">
+    <div class="search-box">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/>
+        <path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input 
+        type="text" 
+        placeholder="Search users..." 
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+      />
+    </div>
+
+    <select [(ngModel)]="selectedRole" (change)="onRoleChange()" class="role-filter">
+      <option value="all">All Roles</option>
+      <option value="user">Users</option>
+      <option value="admin">Admins</option>
+    </select>
+  </div>
+
+ 
+  <div class="users-table">
+    <table>
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Joined</th>
+          <th>Last Login</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of filteredUsers">
+          <td>
+            <div class="user-info">
+              <div class="user-avatar">
+                {{ user.firstName.charAt(0) }}{{ user.lastName.charAt(0) }}
+              </div>
+              <div>
+                <div class="user-name">{{ user.firstName }} {{ user.lastName }}</div>
+              </div>
+            </div>
+          </td>
+          <td>{{ user.email }}</td>
+          <td>
+            <span class="role-badge" [class.admin]="user.role === 'admin'">
+              {{ user.role }}
+            </span>
+          </td>
+          <td>{{ formatDate(user.createdAt) }}</td>
+          <td>{{ formatDate(user.lastLogin) }}</td>
+          <td>
+            <button 
+              class="status-toggle"
+              [class.active]="user.isActive"
+              (click)="toggleUserStatus(user)"
+            >
+              {{ user.isActive ? 'Active' : 'Inactive' }}
+            </button>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button class="edit-btn" (click)="openEditModal(user)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </button>
+              <button class="delete-btn" (click)="openDeleteModal(user)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="filteredUsers.length === 0">
+          <td colspan="7" class="no-users">No users found</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+ 
+  <div class="modal-overlay" *ngIf="showEditModal" (click)="closeModals()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2>Edit User</h2>
+      
+      <form (ngSubmit)="saveUser()" *ngIf="currentUser">
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" [(ngModel)]="currentUser.firstName" name="firstName" required />
+          </div>
+
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" [(ngModel)]="currentUser.lastName" name="lastName" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" [(ngModel)]="currentUser.email" name="email" required />
+        </div>
+
+        <div class="form-group">
+          <label>Role</label>
+          <select [(ngModel)]="currentUser.role" name="role" required>
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" [(ngModel)]="currentUser.isActive" name="isActive" />
+            <span>Active Account</span>
+          </label>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="cancel-btn" (click)="closeModals()">Cancel</button>
+          <button type="submit" class="save-btn">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+ 
+  <div class="modal-overlay" *ngIf="showDeleteModal" (click)="closeModals()">
+    <div class="modal-content small" (click)="$event.stopPropagation()">
+      <h2>Delete User</h2>
+      <p>Are you sure you want to delete {{ userToDelete?.firstName }} {{ userToDelete?.lastName }}?</p>
+      <p class="warning-text">This action cannot be undone.</p>
+      <div class="modal-actions">
+        <button class="cancel-btn" (click)="closeModals()">Cancel</button>
+        <button class="delete-confirm-btn" (click)="deleteUser()">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -3,7 +3,7 @@
   </div>
 </div>
 
-<!-- Navigation Tabs -->
+
 <div class="tabs-container">
   <div class="tabs">
     <button 
@@ -45,7 +45,7 @@
   </div>
 </div>
 
-<!-- Products Section -->
+
 <div class="products-section">
   <div class="section-header">
     <p class="section-label">Revered Formulations</p>
@@ -79,13 +79,13 @@
         <h3 class="product-name">{{ product.name }}</h3>
         <p class="product-description">{{ product.description }}</p>
         <p class="product-category">{{ product.category }}</p>
-        <p class="product-price">€ {{ product.price }}</p>
+        <p class="product-price">{{ product.price | currency:'USD':'symbol':'1.2-2' }}</p>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Journal Section -->
+
 <div class="journal-section">
   <div class="journal-header">
     <p class="section-label">Insights into Health and Wellbeing</p>
@@ -137,7 +137,7 @@
   <a href="#" class="all-posts-link">All Blog Posts →</a>
 </div>
 
-<!-- Footer -->
+
 <footer class="footer">
   <div class="footer-content">
     <div class="footer-brand">

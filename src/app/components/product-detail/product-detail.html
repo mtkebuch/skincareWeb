@@ -1,5 +1,5 @@
 <div class="product-detail-container">
-  <!-- Back Navigation -->
+  
   <div class="back-navigation">
     <button class="back-btn" (click)="goBack()">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -9,18 +9,18 @@
     </button>
   </div>
 
-  <!-- Loading State -->
+  
   <div *ngIf="loading" class="loading-container">
     <p>Loading product...</p>
   </div>
 
-  <!-- Error State -->
+  
   <div *ngIf="error && !loading" class="error-container">
     <p>{{ error }}</p>
     <button routerLink="/" class="back-btn">Back to Shop</button>
   </div>
 
-  <!-- Product Detail Section -->
+ 
   <div *ngIf="product && !loading" class="product-detail-content">
     <div class="product-image-section">
       <img [src]="product.image_url || 'https://placehold.co/600x800/e2e8f0/64748b?text=Product'" 
@@ -34,7 +34,7 @@
       <p class="product-category">{{ product.category }}</p>
       
       <div class="product-price-section">
-        <span class="price">€ {{ product.price }}</span>
+        <span class="price">{{ product.price | currency:'USD':'symbol':'1.2-2' }}</span>
       </div>
 
       <button class="add-to-cart-btn" (click)="addToCart($event)">Add to your cart</button>
@@ -48,18 +48,18 @@
     </div>
   </div>
 
-  <!-- Combine With Section -->
+ 
   <div *ngIf="product && !loading" class="combine-section">
     <p class="combine-label">Suggested</p>
     <h2 class="combine-title">Combine With...</h2>
     <p class="combine-subtitle">You might also like the following products</p>
 
-    <!-- Loading suggestions -->
+    
     <div *ngIf="loadingSuggestions" class="loading-suggestions">
       <p>Loading suggestions...</p>
     </div>
 
-    <!-- Suggested products -->
+  
     <div *ngIf="!loadingSuggestions && suggestedProducts.length > 0" class="suggested-products">
       <div *ngFor="let suggestedProduct of suggestedProducts" class="suggested-card" (click)="navigateToProduct(suggestedProduct.id)">
         <div class="suggested-image">
@@ -75,12 +75,12 @@
           <h3>{{ suggestedProduct.name }}</h3>
           <p class="suggested-desc">{{ suggestedProduct.description }}</p>
           <p class="suggested-size">{{ suggestedProduct.category }}</p>
-          <p class="suggested-price">€ {{ suggestedProduct.price }}</p>
+          <p class="suggested-price">{{ suggestedProduct.price | currency:'USD':'symbol':'1.2-2' }}</p>
         </div>
       </div>
     </div>
 
-    <!-- No suggestions message -->
+   
     <div *ngIf="!loadingSuggestions && suggestedProducts.length === 0" class="no-suggestions">
       <p>No suggested products available at the moment.</p>
     </div>
@@ -94,7 +94,7 @@
     </a>
   </div>
 
-  <!-- Footer -->
+ 
   <footer class="footer">
     <div class="footer-content">
       <div class="footer-brand">

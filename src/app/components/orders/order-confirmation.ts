@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -20,7 +20,8 @@ export class OrderConfirmationComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -31,34 +32,50 @@ export class OrderConfirmationComponent implements OnInit {
       return;
     }
 
-    // Get order ID from query params
     this.route.queryParams.subscribe(params => {
       this.orderId = params['orderId'] || '';
       this.isNewOrder = params['new'] === 'true';
       
-      if (this.orderId) {
-        this.loadOrder();
-      } else {
-        // No order ID, show orders list
-        this.loadUserOrders();
-      }
+      setTimeout(() => {
+        if (this.orderId) {
+          this.loadOrder();
+        } else {
+          this.loadUserOrders();
+        }
+        this.cdr.detectChanges();
+      }, 0);
     });
   }
 
   loadOrder(): void {
-    const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-    this.order = orders.find((o: any) => o.orderId === this.orderId);
+    try {
+      const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+      this.order = orders.find((o: any) => o.orderId === this.orderId || o.id === this.orderId);
 
-    if (!this.order) {
+      if (!this.order) {
+        console.warn('⚠️ Order not found');
+        this.router.navigate(['/order-confirmation']);
+      } else {
+        console.log('✅ Order loaded:', this.order);
+      }
+    } catch (error) {
+      console.error('❌ Error loading order:', error);
       this.router.navigate(['/order-confirmation']);
     }
   }
 
   loadUserOrders(): void {
-    const allOrders = JSON.parse(localStorage.getItem('orders') || '[]');
-    this.userOrders = allOrders
-      .filter((order: any) => order.userId === this.currentUser.id)
-      .sort((a: any, b: any) => new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime());
+    try {
+      const allOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+      this.userOrders = allOrders
+        .filter((order: any) => order.userId === this.currentUser.id)
+        .sort((a: any, b: any) => new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime());
+      
+      console.log('✅ User orders:', this.userOrders);
+    } catch (error) {
+      console.error('❌ Error loading orders:', error);
+      this.userOrders = [];
+    }
   }
 
   viewOrderDetails(orderId: string): void {
@@ -79,38 +96,14 @@ export class OrderConfirmationComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
-  // ფოტოების URL-ების გასწორება
-  getImageUrl(imageUrl: string): string {
-    if (!imageUrl) {
-      return 'https://placehold.co/400x400/e2e8f0/64748b?text=No+Image';
-    }
-    
-    // თუ უკვე სრული Supabase URL-ია
-    if (imageUrl.startsWith('https://ewqxmsfushdrbefoetbh.supabase.co')) {
-      return imageUrl;
-    }
-    
-    // თუ assets/-დან მოდის (ძველი შეკვეთები)
-    if (imageUrl.includes('assets/')) {
-      // ამოვიღოთ ფაილის სახელი
-      const fileName = imageUrl.split('/').pop();
-      // შევცვალოთ Supabase URL-ზე
-      return `https://ewqxmsfushdrbefoetbh.supabase.co/storage/v1/object/public/product-images/${fileName}`;
-    }
-    
-    // თუ უბრალოდ ფაილის სახელია
-    if (!imageUrl.includes('/')) {
-      return `https://ewqxmsfushdrbefoetbh.supabase.co/storage/v1/object/public/product-images/${imageUrl}`;
-    }
-    
-    // default
-    return imageUrl;
+  
+  getItemName(item: any): string {
+    return item?.productName || item?.name || 'Unknown Product';
   }
 
-  // ფოტოს ჩატვირთვის შეცდომა
-  onImageError(event: any): void {
-    console.error('❌ Order image failed to load:', event.target.src);
-    event.target.src = 'https://placehold.co/400x400/e2e8f0/64748b?text=No+Image';
+  
+  getTotalAmount(order: any): number {
+    return order?.totalAmount || order?.total || 0;
   }
 
   formatDate(date: Date | string): string {
