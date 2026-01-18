@@ -30,6 +30,7 @@ export class HomepageComponent implements OnInit {
   async ngOnInit() {
     await this.loadProducts();
 
+    // გვერდის რეფრეშისას ხელახლა ჩატვირთვა
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
@@ -51,11 +52,12 @@ export class HomepageComponent implements OnInit {
       this.loading = true;
       this.cdr.detectChanges();
 
-      console.log('Fetching products...');
+      console.log('📦 Fetching products...');
       this.products = await this.supabaseService.getProducts();
       this.filteredProducts = this.products;
-      console.log('Products loaded:', this.products.length);
+      console.log(`✅ Products loaded: ${this.products.length}`);
       
+      // დეტალური ლოგირება (დეველოპმენტისთვის)
       this.products.forEach((product, index) => {
         console.log(`Product ${index + 1}:`, {
           name: product.name,
@@ -65,13 +67,12 @@ export class HomepageComponent implements OnInit {
       });
       
     } catch (error) {
-      console.error('Error loading products:', error);
+      console.error('❌ Error loading products:', error);
       this.products = [];
       this.filteredProducts = [];
     } finally {
       this.loading = false;
       this.cdr.detectChanges();
-      console.log('Loading complete. Products count:', this.products.length);
     }
   }
 
@@ -88,34 +89,35 @@ export class HomepageComponent implements OnInit {
       });
     }
     
-    console.log(`Filtered by ${category}:`, this.filteredProducts.length, 'products');
+    console.log(`🔍 Filtered by "${category}": ${this.filteredProducts.length} products`);
     this.cdr.detectChanges();
   }
 
   async refreshProducts() {
-    console.log('Manual refresh triggered');
+    console.log('🔄 Manual refresh triggered');
     await this.loadProducts();
   }
   
+  // ფოტოს URL - უბრალოდ დაბრუნება (database-ში უკვე სწორი Supabase URL-ია)
   getFullImagePath(url: string): string {
-    if (!url) return 'NO URL';
-    if (url.startsWith('http')) return url;
-    return window.location.origin + '/' + url;
+    if (!url) {
+      return 'https://placehold.co/400x400/e2e8f0/64748b?text=No+Image';
+    }
+    // URL უკვე სწორია database-ში
+    return url;
   }
   
+  // ფოტოს ჩატვირთვის შეცდომა
   onImageError(event: any, product: any) {
-    console.error('Image failed to load:', {
-      product_name: product.name,
-      attempted_url: event.target.src,
-      original_url: product.image_url
+    console.error('❌ Image failed to load:', {
+      product: product.name,
+      url: product.image_url
     });
     event.target.src = 'https://placehold.co/400x400/e2e8f0/64748b?text=No+Image';
   }
   
+  // ფოტოს წარმატებით ჩატვირთვა
   onImageLoad(event: any, product: any) {
-    console.log('Image loaded successfully:', {
-      product_name: product.name,
-      url: event.target.src
-    });
+    console.log('✅ Image loaded:', product.name);
   }
 }

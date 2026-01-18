@@ -4,6 +4,8 @@ import { ProductDetailComponent } from './components/product-detail/product-deta
 import { AuthComponent } from './components/auth/auth';
 import { RegisterComponent } from './components/register/register';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password';
+import { CheckoutComponent } from './components/checkout/checkout';
+import { OrderConfirmationComponent } from './components/orders/order-confirmation'; 
 import { authGuard, guestGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -28,7 +30,16 @@ export const routes: Routes = [
   { 
     path: 'forgot-password', 
     component: ForgotPasswordComponent
-    // არ უნდა იყოს guestGuard - რადგან token-ით reset-ზეც მოდის
+  },
+  { 
+    path: 'checkout',  
+    component: CheckoutComponent,
+    canActivate: [authGuard]
+  },
+  { 
+    path: 'order-confirmation',  // ⬅️ დაამატეთ
+    component: OrderConfirmationComponent,
+    canActivate: [authGuard]
   },
   { 
     path: '**', 

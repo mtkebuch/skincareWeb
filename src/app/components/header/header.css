@@ -30,6 +30,7 @@
   display: flex;
   gap: 30px;
   flex: 1;
+  min-width: 0; /* Important for flex truncation */
 }
 
 .nav-link {
@@ -39,6 +40,7 @@
   text-decoration: none;
   transition: color 0.3s;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .nav-link:hover {
@@ -66,9 +68,9 @@
   gap: 20px;
   flex: 1;
   justify-content: flex-end;
+  min-width: 0; /* Important for flex truncation */
 }
 
-/* User Name Display */
 .user-name {
   font-family: 'Arimo', sans-serif;
   font-size: 13px;
@@ -76,6 +78,10 @@
   font-weight: 500;
   letter-spacing: 0.5px;
   padding: 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px; /* Limit width on desktop */
 }
 
 .icon-btn {
@@ -88,6 +94,7 @@
   justify-content: center;
   transition: opacity 0.3s;
   position: relative;
+  flex-shrink: 0; /* Prevent icons from shrinking */
 }
 
 .icon-btn:hover {
@@ -98,7 +105,6 @@
   color: #1a1a1a;
 }
 
-/* Cart Button with Badge */
 .cart-btn {
   position: relative;
 }
@@ -122,7 +128,6 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
-/* Logout button */
 .logout-btn {
   display: flex;
   align-items: center;
@@ -138,6 +143,7 @@
   font-weight: 500;
   letter-spacing: 0.5px;
   transition: all 0.3s;
+  flex-shrink: 0; /* Don't shrink button */
 }
 
 .logout-btn:hover {
@@ -151,7 +157,6 @@
   stroke: #fff;
 }
 
-/* Modal Overlay */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -176,7 +181,6 @@
   }
 }
 
-/* Modal Content */
 .modal-content {
   background: white;
   padding: 32px;
@@ -251,7 +255,6 @@
   background: #333;
 }
 
-/* Toast Notification - The Ordinary Minimal Design */
 .toast-notification {
   position: fixed;
   top: 20px;
@@ -296,8 +299,8 @@
   font-family: 'Arimo', sans-serif;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+/* Tablet */
+@media (max-width: 968px) {
   .header-content {
     padding: 0 40px;
   }
@@ -306,8 +309,37 @@
     gap: 20px;
   }
 
+  .user-name {
+    max-width: 120px; /* Smaller on tablet */
+  }
+}
+
+/* Mobile Large */
+@media (max-width: 768px) {
+  .header-content {
+    padding: 0 30px;
+  }
+
+  .header-nav-left {
+    gap: 15px;
+  }
+
   .nav-link {
     font-size: 12px;
+  }
+
+  .user-name {
+    max-width: 100px; /* Even smaller on mobile */
+    font-size: 12px;
+  }
+
+  .header-nav-right {
+    gap: 15px;
+  }
+
+  .logout-btn {
+    padding: 6px 12px;
+    font-size: 11px;
   }
   
   .toast-notification {
@@ -321,7 +353,8 @@
   }
 }
 
-@media (max-width: 480px) {
+/* Mobile Small */
+@media (max-width: 580px) {
   .header-content {
     padding: 0 20px;
   }
@@ -335,7 +368,56 @@
     transform: none;
   }
 
+  .header-logo a {
+    font-size: 18px;
+  }
+
   .header-nav-right {
-    gap: 15px;
+    gap: 12px;
+  }
+
+  .user-name {
+    max-width: 80px; /* Very compact on small mobile */
+    font-size: 11px;
+    padding: 0 4px;
+  }
+
+  .logout-btn {
+    padding: 6px 10px;
+    font-size: 10px;
+    gap: 4px;
+  }
+
+  .logout-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .icon-btn {
+    padding: 6px;
+  }
+}
+
+/* Extra Small Mobile */
+@media (max-width: 380px) {
+  .header-content {
+    padding: 0 15px;
+  }
+
+  .user-name {
+    display: none; /* Hide user name on very small screens */
+  }
+
+  .header-nav-right {
+    gap: 10px;
+  }
+
+  .logout-btn span {
+    display: none; /* Show only icon on logout button */
+  }
+
+  .logout-btn {
+    padding: 8px;
+    gap: 0;
   }
 }

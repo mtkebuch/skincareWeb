@@ -1,6 +1,6 @@
-// cart-sidebar.component.ts
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router'; 
 import { CartService, CartItem } from '../../services/cart.service';
 
 @Component({
@@ -14,7 +14,10 @@ export class CartSidebarComponent {
   @Input() isOpen: boolean = false;
   @Output() close = new EventEmitter<void>();
 
-  constructor(public cartService: CartService) {}
+  constructor(
+    public cartService: CartService,
+    private router: Router 
+  ) {}
 
   onClose(): void {
     this.close.emit();
@@ -63,8 +66,7 @@ export class CartSidebarComponent {
   }
 
   proceedToCheckout(): void {
-    // Navigate to checkout page or handle checkout
-    console.log('Proceeding to checkout...');
+    this.router.navigate(['/checkout']); 
     this.onClose();
   }
 }

@@ -1,10 +1,10 @@
-// header.component.ts
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { CartSidebarComponent } from '../cart/cart-sidebar';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header',
@@ -27,28 +27,43 @@ export class HeaderComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Check if there's a logout flag in sessionStorage
-    const justLoggedOut = sessionStorage.getItem('justLoggedOut');
-    if (justLoggedOut === 'true') {
-      sessionStorage.removeItem('justLoggedOut');
-      this.showLogoutToast = true;
-      this.cdr.detectChanges();
-      
-      setTimeout(() => {
-        this.showLogoutToast = false;
-        this.cdr.detectChanges();
-      }, 3000);
-    }
-
-    // Subscribe to cart changes
+    // Cart subscriptions
     this.cartService.cartItems$.subscribe(() => {
       this.cartItemCount = this.cartService.getCartItemCount();
     });
 
-    // Subscribe to cart open/close
     this.cartService.cartOpen$.subscribe(isOpen => {
       this.isCartOpen = isOpen;
     });
+
+    // Check for logout toast on navigation
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.checkLogoutToast();
+    });
+
+    // Initial check
+    this.checkLogoutToast();
+  }
+
+  private checkLogoutToast(): void {
+    const justLoggedOut = sessionStorage.getItem('justLoggedOut');
+    if (justLoggedOut === 'true') {
+      sessionStorage.removeItem('justLoggedOut');
+      
+      // Small delay to ensure page is rendered
+      setTimeout(() => {
+        this.showLogoutToast = true;
+        this.cdr.detectChanges();
+        
+        // Hide after 3 seconds
+        setTimeout(() => {
+          this.showLogoutToast = false;
+          this.cdr.detectChanges();
+        }, 3000);
+      }, 100);
+    }
   }
 
   isLoggedIn(): boolean {
@@ -65,7 +80,7 @@ export class HeaderComponent implements OnInit {
 
   handleUserClick(): void {
     if (this.isLoggedIn()) {
-      this.router.navigate(['/profile']);
+      this.router.navigate(['/order-confirmation']);
     } else {
       this.router.navigate(['/login']);
     }
@@ -87,22 +102,11 @@ export class HeaderComponent implements OnInit {
     this.showLogoutModal = false;
     this.authService.logout();
     
-    // Set flag in sessionStorage
+    // Set flag for toast
     sessionStorage.setItem('justLoggedOut', 'true');
     
-    // Navigate to home page
-    this.router.navigate(['/']).then(() => {
-      // After navigation, show toast
-      setTimeout(() => {
-        this.showLogoutToast = true;
-        this.cdr.detectChanges();
-        
-        setTimeout(() => {
-          this.showLogoutToast = false;
-          this.cdr.detectChanges();
-        }, 3000);
-      }, 100);
-    });
+    // Navigate to homepage
+    this.router.navigate(['/']);
   }
 
   cancelLogout(): void {

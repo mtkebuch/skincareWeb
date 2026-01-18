@@ -95,12 +95,13 @@ export class RegisterComponent {
       this.lastName
     );
 
-    this.loading = false;
-
     if (result.success) {
       this.successMessage = result.message;
-      this.router.navigate(['/login']);
+      setTimeout(() => {
+        this.router.navigate(['/login']);
+      }, 1000);
     } else {
+      this.loading = false;
       this.errorMessage = result.message;
     }
   }

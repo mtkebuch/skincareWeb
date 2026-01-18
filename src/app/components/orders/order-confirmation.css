@@ -1,0 +1,845 @@
+@import url('https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
+
+/* Orders Container */
+.orders-container {
+  font-family: 'Arimo', sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 140px 20px 60px 20px;
+}
+
+.orders-header {
+  margin-bottom: 40px;
+}
+
+/* Back Button - Product Detail Style */
+.back-btn,
+.back-to-orders .back-btn,
+.orders-header .back-btn,
+button.back-btn,
+a.back-btn {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px !important;
+  background: none !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-family: 'Arimo', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #666 !important;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px !important;
+  text-decoration: none;
+  position: relative;
+  z-index: 100;
+  margin-bottom: 30px;
+  box-shadow: none !important;
+}
+
+.back-btn:hover,
+.back-to-orders .back-btn:hover,
+.orders-header .back-btn:hover,
+button.back-btn:hover,
+a.back-btn:hover {
+  background: #f5f5f5 !important;
+  color: #1a1a1a !important;
+  border: none !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.back-btn span,
+.back-to-orders .back-btn span,
+.orders-header .back-btn span {
+  color: inherit !important;
+}
+
+.back-btn svg,
+.back-to-orders .back-btn svg,
+.orders-header .back-btn svg {
+  transition: transform 0.3s ease;
+  stroke-width: 2 !important;
+  flex-shrink: 0;
+  stroke: currentColor !important;
+}
+
+.back-btn:hover svg,
+.back-to-orders .back-btn:hover svg,
+.orders-header .back-btn:hover svg {
+  transform: translateX(-4px) !important;
+}
+
+.header-title-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.header-title-section h1 {
+  font-family: 'Arimo', sans-serif;
+  font-size: 36px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.order-count {
+  font-family: 'Arimo', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  background: #f7f7f7;
+  padding: 6px 12px;
+  border-radius: 20px;
+  margin: 0;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.empty-icon {
+  margin-bottom: 30px;
+  opacity: 0.4;
+}
+
+.empty-icon svg {
+  color: #666;
+}
+
+.empty-state h2 {
+  font-family: 'Arimo', sans-serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 15px;
+}
+
+.empty-state p {
+  font-family: 'Arimo', sans-serif;
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.shop-now-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 35px;
+  background: #2d2d2d;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Arimo', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.shop-now-btn:hover {
+  background: #1a1a1a;
+  gap: 16px;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.shop-now-btn svg {
+  transition: transform 0.3s;
+}
+
+.shop-now-btn:hover svg {
+  transform: translateX(3px);
+}
+
+/* Orders List */
+.orders-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 25px;
+}
+
+.order-card {
+  background: #f7f7f7;
+  border-radius: 8px;
+  padding: 25px;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  border: 2px solid transparent;
+}
+
+.order-card:hover {
+  border-color: #2d2d2d;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.order-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.order-id-section {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.order-label {
+  font-family: 'Arimo', sans-serif;
+  font-size: 11px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.order-id {
+  font-family: 'Arimo', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2d2d2d;
+}
+
+.order-status {
+  font-family: 'Arimo', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 20px;
+  text-transform: capitalize;
+}
+
+.order-status.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.order-status.processing {
+  background: #cfe2ff;
+  color: #084298;
+}
+
+.order-status.shipped {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.order-status.delivered {
+  background: #d4edda;
+  color: #155724;
+}
+
+.order-status.cancelled {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.order-date {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Arimo', sans-serif;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.order-date svg {
+  color: #999;
+}
+
+.order-items-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.item-preview {
+  width: 50px;
+  height: 50px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid #fff;
+}
+
+.item-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.items-count {
+  font-family: 'Arimo', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #666;
+  background: #fff;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+.order-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 15px;
+  border-top: 1px solid #e0e0e0;
+  margin-bottom: 15px;
+}
+
+.order-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.items-total,
+.payment-method {
+  font-family: 'Arimo', sans-serif;
+  font-size: 12px;
+  color: #666;
+}
+
+.items-total {
+  font-weight: 500;
+  color: #2d2d2d;
+}
+
+.order-total-inline {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.total-label {
+  font-family: 'Arimo', sans-serif;
+  font-size: 11px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.total-amount {
+  font-family: 'Arimo', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #2d2d2d;
+}
+
+.view-details-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px;
+  background: #2d2d2d;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Arimo', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.view-details-btn:hover {
+  background: #1a1a1a;
+  gap: 12px;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.view-details-btn svg {
+  transition: transform 0.3s;
+}
+
+.view-details-btn:hover svg {
+  transform: translateX(3px);
+}
+
+/* Order Details Section */
+.confirmation-container {
+  font-family: 'Arimo', sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 140px 20px 60px 20px;
+}
+
+.back-to-orders {
+  margin-bottom: 30px;
+}
+
+/* Success Animation - Improved Design */
+.success-animation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 40px;
+  padding: 20px;
+}
+
+.checkmark-circle {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  display: inline-block;
+}
+
+.checkmark {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: block;
+  stroke-width: 3;
+  stroke: #4caf50;
+  stroke-miterlimit: 10;
+  box-shadow: inset 0px 0px 0px #4caf50;
+  animation: fill 0.4s ease-in-out 0.4s forwards, scale 0.3s ease-in-out 0.9s both;
+}
+
+.checkmark-circle-path {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 3;
+  stroke-miterlimit: 10;
+  stroke: #4caf50;
+  fill: none;
+  animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkmark-check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  stroke-width: 4;
+  stroke: #fff;
+  fill: none;
+  animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+@keyframes stroke {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes scale {
+  0%, 100% {
+    transform: none;
+  }
+  50% {
+    transform: scale3d(1.1, 1.1, 1);
+  }
+}
+
+@keyframes fill {
+  100% {
+    box-shadow: inset 0px 0px 0px 50px #4caf50;
+  }
+}
+
+/* Success Message */
+.success-message {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.success-message h1 {
+  font-family: 'Arimo', sans-serif;
+  font-size: 32px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 15px;
+  letter-spacing: 0.5px;
+}
+
+.success-message p {
+  font-family: 'Arimo', sans-serif;
+  font-size: 16px;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* Cards */
+.order-details-card,
+.info-card {
+  background: #f7f7f7;
+  border-radius: 8px;
+  padding: 30px;
+  margin-bottom: 25px;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.order-header h2 {
+  font-family: 'Arimo', sans-serif;
+  font-size: 22px;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.order-id .label {
+  font-family: 'Arimo', sans-serif;
+  font-size: 12px;
+  color: #666;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.order-id .value {
+  font-family: 'Arimo', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2d2d2d;
+  background: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-row .label {
+  font-family: 'Arimo', sans-serif;
+  font-size: 14px;
+  color: #666;
+}
+
+.detail-row .value {
+  font-family: 'Arimo', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.status-badge {
+  font-family: 'Arimo', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #38a169;
+  background: #f0fff4;
+  padding: 6px 12px;
+  border-radius: 20px;
+  text-transform: capitalize;
+}
+
+/* Info Cards */
+.info-card h3 {
+  font-family: 'Arimo', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin-bottom: 20px;
+}
+
+.address-info p {
+  font-family: 'Arimo', sans-serif;
+  font-size: 14px;
+  color: #2d3748;
+  line-height: 1.8;
+  margin: 5px 0;
+}
+
+.address-info p strong {
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.contact-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px !important;
+}
+
+.contact-info svg {
+  color: #666;
+  flex-shrink: 0;
+}
+
+/* Order Items */
+.order-items {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.order-item {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  gap: 20px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.order-item img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.item-details h4 {
+  font-family: 'Arimo', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin-bottom: 5px;
+}
+
+.item-details p {
+  font-family: 'Arimo', sans-serif;
+  font-size: 13px;
+  color: #666;
+  margin: 3px 0;
+}
+
+.item-details .quantity {
+  font-weight: 500;
+  color: #2d3748;
+}
+
+.item-price {
+  font-family: 'Arimo', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+  text-align: right;
+  align-self: center;
+}
+
+/* Summary */
+.summary-card {
+  background: #2d2d2d;
+  color: #fff;
+}
+
+.summary-card h3 {
+  color: #fff;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.summary-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Arimo', sans-serif;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.summary-row.total {
+  font-size: 22px;
+  font-weight: 600;
+  color: #fff;
+  margin-top: 15px;
+  padding-top: 20px;
+  border-top: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Actions */
+.confirmation-actions {
+  display: flex;
+  justify-content: center;
+  margin: 40px 0 30px;
+}
+
+.continue-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 35px;
+  background: #2d2d2d;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Arimo', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.continue-btn:hover {
+  background: #1a1a1a;
+  gap: 16px;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.continue-btn svg {
+  transition: transform 0.3s;
+}
+
+.continue-btn:hover svg {
+  transform: translateX(3px);
+}
+
+/* Additional Info */
+.additional-info {
+  text-align: center;
+  padding: 20px;
+  background: #f0f7ff;
+  border-radius: 8px;
+  border: 1px solid #bee3f8;
+}
+
+.additional-info p {
+  font-family: 'Arimo', sans-serif;
+  font-size: 14px;
+  color: #2c5282;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.additional-info svg {
+  color: #3182ce;
+  flex-shrink: 0;
+}
+
+/* Loading State */
+.loading-state {
+  text-align: center;
+  padding: 100px 20px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 20px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #2d2d2d;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-state p {
+  font-family: 'Arimo', sans-serif;
+  font-size: 16px;
+  color: #666;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .orders-list {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .orders-container,
+  .confirmation-container {
+    padding: 110px 15px 40px 15px;
+  }
+
+  .header-title-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .header-title-section h1 {
+    font-size: 28px;
+  }
+
+  .orders-list {
+    grid-template-columns: 1fr;
+  }
+
+  .success-message h1 {
+    font-size: 26px;
+  }
+
+  .order-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .order-id {
+    text-align: left;
+  }
+
+  .order-item {
+    grid-template-columns: 60px 1fr;
+    gap: 15px;
+  }
+
+  .order-item img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .item-price {
+    grid-column: 2;
+    text-align: left;
+    margin-top: 10px;
+  }
+
+  .additional-info p {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .checkmark-circle {
+    width: 80px;
+    height: 80px;
+  }
+
+  .checkmark {
+    width: 80px;
+    height: 80px;
+  }
+}

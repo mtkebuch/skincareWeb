@@ -1,0 +1,293 @@
+<div class="checkout-container">
+  <!-- Header -->
+  <div class="checkout-header">
+    <button class="back-btn" (click)="goBack()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="19" y1="12" x2="5" y2="12"/>
+        <polyline points="12 19 5 12 12 5"/>
+      </svg>
+      <span>Continue Shopping</span>
+    </button>
+    <h1>Checkout</h1>
+  </div>
+
+  <div class="checkout-content">
+    <!-- Left Side - Forms -->
+    <div class="checkout-left">
+      
+      <!-- Success/Error Messages -->
+      <div *ngIf="errorMessage" class="alert alert-error">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <div *ngIf="successMessage" class="alert alert-success">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+          <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+        <span>{{ successMessage }}</span>
+      </div>
+
+      <!-- Shipping Information -->
+      <div class="checkout-section">
+        <h2 class="section-title">Shipping Information</h2>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name *</label>
+            <input 
+              type="text" 
+              [(ngModel)]="shippingAddress.firstName"
+              [class.error]="errors.firstName"
+              placeholder="Enter first name"
+            >
+            <span *ngIf="errors.firstName" class="error-text">{{ errors.firstName }}</span>
+          </div>
+
+          <div class="form-group">
+            <label>Last Name *</label>
+            <input 
+              type="text" 
+              [(ngModel)]="shippingAddress.lastName"
+              [class.error]="errors.lastName"
+              placeholder="Enter last name"
+            >
+            <span *ngIf="errors.lastName" class="error-text">{{ errors.lastName }}</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email *</label>
+            <input 
+              type="email" 
+              [(ngModel)]="shippingAddress.email"
+              [class.error]="errors.email"
+              placeholder="your@email.com"
+            >
+            <span *ngIf="errors.email" class="error-text">{{ errors.email }}</span>
+          </div>
+
+          <div class="form-group">
+            <label>Phone *</label>
+            <input 
+              type="tel" 
+              [(ngModel)]="shippingAddress.phone"
+              [class.error]="errors.phone"
+              placeholder="+995 XXX XXX XXX"
+            >
+            <span *ngIf="errors.phone" class="error-text">{{ errors.phone }}</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Address *</label>
+          <input 
+            type="text" 
+            [(ngModel)]="shippingAddress.address"
+            [class.error]="errors.address"
+            placeholder="Street address"
+          >
+          <span *ngIf="errors.address" class="error-text">{{ errors.address }}</span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>City *</label>
+            <input 
+              type="text" 
+              [(ngModel)]="shippingAddress.city"
+              [class.error]="errors.city"
+              placeholder="City"
+            >
+            <span *ngIf="errors.city" class="error-text">{{ errors.city }}</span>
+          </div>
+
+          <div class="form-group">
+            <label>Postal Code *</label>
+            <input 
+              type="text" 
+              [(ngModel)]="shippingAddress.postalCode"
+              [class.error]="errors.postalCode"
+              placeholder="0000"
+            >
+            <span *ngIf="errors.postalCode" class="error-text">{{ errors.postalCode }}</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Country *</label>
+          <select [(ngModel)]="shippingAddress.country">
+            <option value="Georgia">Georgia</option>
+            <option value="USA">United States</option>
+            <option value="UK">United Kingdom</option>
+            <option value="Germany">Germany</option>
+            <option value="France">France</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Payment Method -->
+      <div class="checkout-section">
+        <h2 class="section-title">Payment Method</h2>
+        
+        <div class="payment-methods">
+          <label class="payment-option" [class.active]="paymentMethod === 'card'">
+            <input 
+              type="radio" 
+              name="payment" 
+              value="card"
+              [(ngModel)]="paymentMethod"
+            >
+            <div class="payment-content">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                <line x1="1" y1="10" x2="23" y2="10"/>
+              </svg>
+              <span>Credit/Debit Card</span>
+            </div>
+          </label>
+
+          <label class="payment-option" [class.active]="paymentMethod === 'cash'">
+            <input 
+              type="radio" 
+              name="payment" 
+              value="cash"
+              [(ngModel)]="paymentMethod"
+            >
+            <div class="payment-content">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="1" x2="12" y2="23"/>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+              <span>Cash on Delivery</span>
+            </div>
+          </label>
+        </div>
+
+        <!-- Card Details (shown only if card payment selected) -->
+        <div *ngIf="paymentMethod === 'card'" class="card-details">
+          <div class="form-group">
+            <label>Card Number *</label>
+            <input 
+              type="text" 
+              [(ngModel)]="cardDetails.cardNumber"
+              (input)="formatCardNumber($event)"
+              [class.error]="errors.cardNumber"
+              placeholder="1234 5678 9012 3456"
+              maxlength="19"
+            >
+            <span *ngIf="errors.cardNumber" class="error-text">{{ errors.cardNumber }}</span>
+          </div>
+
+          <div class="form-group">
+            <label>Cardholder Name *</label>
+            <input 
+              type="text" 
+              [(ngModel)]="cardDetails.cardName"
+              [class.error]="errors.cardName"
+              placeholder="Name on card"
+            >
+            <span *ngIf="errors.cardName" class="error-text">{{ errors.cardName }}</span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Expiry Date *</label>
+              <input 
+                type="text" 
+                [(ngModel)]="cardDetails.expiryDate"
+                (input)="formatExpiryDate($event)"
+                [class.error]="errors.expiryDate"
+                placeholder="MM/YY"
+                maxlength="5"
+              >
+              <span *ngIf="errors.expiryDate" class="error-text">{{ errors.expiryDate }}</span>
+            </div>
+
+            <div class="form-group">
+              <label>CVV *</label>
+              <input 
+                type="text" 
+                [(ngModel)]="cardDetails.cvv"
+                [class.error]="errors.cvv"
+                placeholder="123"
+                maxlength="4"
+              >
+              <span *ngIf="errors.cvv" class="error-text">{{ errors.cvv }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Terms and Conditions -->
+      <div class="checkout-section">
+        <label class="checkbox-container">
+          <input 
+            type="checkbox" 
+            [(ngModel)]="agreedToTerms"
+          >
+          <span class="checkmark"></span>
+          <span class="checkbox-label">I agree to the <a href="/terms">Terms and Conditions</a></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Right Side - Order Summary -->
+    <div class="checkout-right">
+      <div class="order-summary">
+        <h2 class="summary-title">Order Summary</h2>
+
+        <div class="summary-items">
+          <div *ngFor="let item of cartItems" class="summary-item">
+            <img [src]="item.image" [alt]="item.name">
+            <div class="item-details">
+              <h3>{{ item.name }}</h3>
+              <p>{{ item.volume }}</p>
+              <p>Qty: {{ item.quantity }}</p>
+            </div>
+            <div class="item-price">€{{ item.price * item.quantity }}</div>
+          </div>
+        </div>
+
+        <div class="summary-divider"></div>
+
+        <div class="summary-totals">
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span>€{{ getSubtotal() }}</span>
+          </div>
+          <div class="summary-row">
+            <span>Shipping</span>
+            <span>{{ getShippingCost() === 0 ? 'FREE' : '€' + getShippingCost() }}</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total</span>
+            <span>€{{ getTotal() }}</span>
+          </div>
+        </div>
+
+        <button 
+          class="place-order-btn" 
+          (click)="placeOrder()"
+          [disabled]="loading"
+        >
+          {{ loading ? 'Processing...' : 'Place Order' }}
+        </button>
+
+        <div class="secure-checkout">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <span>Secure Checkout</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
