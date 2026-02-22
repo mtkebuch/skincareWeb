@@ -1,59 +1,177 @@
-# SkincareWeb
+# The ORDINARY — Skincare E-Commerce Web App
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.0.
+A full-featured skincare e-commerce web application built with **Angular 21** and **Supabase**. The app allows users to browse and purchase skincare products, manage their cart and orders, and provides an admin panel for managing products and users.
 
-## Development server
+---
 
-To start a local development server, run:
+## Features
+
+### Shopping
+- Browse all skincare products fetched in real-time from Supabase
+- Filter products by category: **Cleanse, Serum, Gel, Balm, Cream**
+- View detailed product pages
+- Add products to cart with quantity management
+- Sliding cart sidebar with item count badge
+
+### Authentication
+- User registration and login with JWT-based auth
+- "Remember me" functionality
+- Forgot password flow
+- Route guards: protected routes for authenticated users, guest-only routes for login/register
+- Automatic redirect to admin panel for admin users after login
+
+### Checkout & Orders
+- Full checkout form with shipping address and payment details (card or cash on delivery)
+- Form validation (email format, phone number, 16-digit card number, CVV, expiry date)
+- Free shipping on orders over $100
+- Order confirmation page with order summary
+- Orders saved to localStorage
+
+### Admin Panel
+- Protected by `adminGuard` — accessible only to admin role users
+- **Dashboard** — overview of the store
+- **Products management** — add, edit, and delete products with image upload to Supabase Storage
+- **Users management** — view and manage registered users
+
+### Journal / Blog
+- Static blog section on the homepage with skincare-related articles
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Angular 21 (standalone components) |
+| Language | TypeScript 5.9 |
+| Backend / Database | Supabase (PostgreSQL) |
+| File Storage | Supabase Storage (`product-images` bucket) |
+| Auth | Custom JWT auth using `localStorage` |
+| State Management | RxJS `BehaviorSubject` |
+| Testing | Vitest |
+| Styling | CSS (component-scoped) |
+
+---
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── components/
+│   │   ├── admin/
+│   │   │   ├── dashboard/        # Admin overview
+│   │   │   ├── products/         # Product CRUD
+│   │   │   └── users/            # User management
+│   │   ├── auth/                 # Login page
+│   │   ├── cart/                 # Cart sidebar
+│   │   ├── checkout/             # Checkout form
+│   │   ├── forgot-password/      # Password reset
+│   │   ├── header/               # Navigation bar
+│   │   ├── homepage/             # Product listing + journal
+│   │   ├── not-found/            # 404 page
+│   │   ├── orders/               # Order confirmation
+│   │   ├── product-detail/       # Single product view
+│   │   └── register/             # Registration page
+│   ├── guards/
+│   │   └── auth.guard.ts         # authGuard, guestGuard, adminGuard
+│   ├── interceptors/
+│   │   └── auth.interceptor.ts   # HTTP auth interceptor
+│   ├── services/
+│   │   ├── auth.service.ts       # Login, register, JWT logic
+│   │   ├── cart.service.ts       # Cart state management
+│   │   └── supabase.service.ts   # DB & storage interactions
+│   ├── app.routes.ts             # App routing
+│   └── app.config.ts             # App configuration
+└── assets/
+    └── journal/                  # Blog article images
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (v18+)
+- [Angular CLI](https://angular.dev/tools/cli) v21
+
+### Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/mtkebuch/skincareWeb.git
+cd skincareWeb
+
+# Install dependencies
+npm install
+
+# Start the development server
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Then open your browser at **http://localhost:4200**.
 
-## Code scaffolding
+---
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Supabase Setup
+
+The app connects to a Supabase project for product data and image storage. The following tables are required:
+
+**`skincare_products`**
+| Column | Type |
+|---|---|
+| id | uuid (primary key) |
+| name | text |
+| description | text |
+| price | numeric |
+| category | text |
+| image_url | text |
+
+**`users`** (for admin user management panel)
+| Column | Type |
+|---|---|
+| id | uuid (primary key) |
+| email | text |
+| role | text |
+| created_at | timestamp |
+
+A **Supabase Storage bucket** named `product-images` is also required for admin image uploads.
+
+---
+
+## Default Admin Account
+
+On first run, a default admin account is seeded into `localStorage`:
+
+| Field | Value |
+|---|---|
+| Email | `admin@skincare.com` |
+| Password | `Admin123!` |
+
+> ⚠️ Change this before deploying to production.
+
+---
+
+## Available Scripts
 
 ```bash
-ng generate component component-name
+ng serve       # Start dev server at localhost:4200
+ng build       # Build for production (output in /dist)
+ng test        # Run unit tests with Vitest
+ng build --watch --configuration development  # Watch mode
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
-```bash
-ng generate --help
-```
+## Security Notes
 
-## Building
+- JWT tokens are implemented client-side using `btoa`/`atob` with a hardcoded secret. This is **not secure for production** — consider using a proper backend auth service (e.g., Supabase Auth).
+- User data and orders are stored in `localStorage`, which does not persist across devices.
+- The Supabase anon key is currently hardcoded in `supabase.service.ts`. Move it to environment variables before deploying.
 
-To build the project run:
+---
 
-```bash
-ng build
-```
+## License
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+This project is for educational/personal use.
